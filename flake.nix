@@ -11,10 +11,14 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
-    self,
     nixpkgs,
     home-manager,
     ...
@@ -23,7 +27,10 @@
     nixosConfigurations = {
       nix = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
-        modules = [./nixos/configuration.nix];
+        modules = [
+          inputs.lanzaboote.nixosModules.lanzaboote
+          ./nixos/configuration.nix
+        ];
       };
     };
 

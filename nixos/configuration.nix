@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ lib, pkgs, inputs, ... }:
 
 {
   imports = [
@@ -9,10 +9,14 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+  };
 
   # Enable hardware graphics acceleration
   hardware.graphics = {
@@ -56,6 +60,7 @@
   };
 
   # User Configuration
+  nix.settings.trusted-users = [ "root" "ruggy" ];
   users.users."ruggy" = {
     isNormalUser = true;
     description = "Mateus Anselmo";
@@ -77,11 +82,13 @@
   ];
 
   services.xserver.desktopManager.xterm.enable = false;
+  services.openssh.enable = true;
   services.tailscale.enable = true;
 
   environment.systemPackages = with pkgs; [
     git
     nixd
+    sbctl
     zed-editor
     pantheon-tweaks
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
