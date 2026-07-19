@@ -1,7 +1,9 @@
 { inputs, lib, config, pkgs, ... }:
 
 {
-  imports = [];
+  imports = [
+    ./fish.nix
+  ];
 
   nixpkgs = {
     overlays = [];
@@ -21,14 +23,15 @@
 
   programs.git = {
     enable = true;
-    userName = "Mateus Anselmo";
-    userEmail = "mateusanselmoguarino@gmail.com";
+    settings = {
+      user = {
+        email = "mateusanselmoguarino@gmail.com";
+        name = "matoanselmo";
+      };
+    };
   };
 
-  # User-specific packages go here
   home.packages = with pkgs; [
-    # discord
-    # vscode
-    # neofetch
+    orca-slicer
   ];
 }
