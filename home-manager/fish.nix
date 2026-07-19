@@ -1,4 +1,9 @@
-{...}: {
+{pkgs, ...}: {
+  home.packages = [
+    pkgs.fastfetch
+    pkgs.fortune
+  ];
+
   programs.fish = {
     enable = true;
 
@@ -21,6 +26,10 @@
 
     interactiveShellInit = ''
       set fish_greeting
+
+      fastfetch
+      echo ""
+      fortune -s
     '';
   };
 

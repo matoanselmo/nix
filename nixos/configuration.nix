@@ -63,6 +63,7 @@
   nix.settings.trusted-users = [ "root" "ruggy" ];
   users.users."ruggy" = {
     isNormalUser = true;
+    shell = pkgs.fish;
     description = "Mateus Anselmo";
     extraGroups = [ "networkmanager" "wheel" ];
   };
@@ -84,6 +85,8 @@
   services.xserver.desktopManager.xterm.enable = false;
   services.openssh.enable = true;
   services.tailscale.enable = true;
+
+  programs.fish.enable = true;
 
   environment.systemPackages = with pkgs; [
     git
