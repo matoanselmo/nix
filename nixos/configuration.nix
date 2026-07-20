@@ -44,7 +44,7 @@
   };
 
   # Enable Pantheon here instead
-  services.desktopManager.pantheon.enable = true;
+  # services.desktopManager.pantheon.enable = true;
   programs.hyprland.enable = true;
 
   xdg.portal = {
@@ -76,17 +76,17 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.pantheon.excludePackages = [
-    pkgs.epiphany
-    pkgs.pantheon.elementary-calculator
-    pkgs.pantheon.elementary-camera
-    pkgs.pantheon.elementary-calendar
-    pkgs.pantheon.elementary-code
-    pkgs.pantheon.elementary-mail
-    pkgs.pantheon.elementary-maps
-    pkgs.pantheon.elementary-music
-    pkgs.pantheon.elementary-tasks
-  ];
+#  environment.pantheon.excludePackages = [
+#    pkgs.epiphany
+#    pkgs.pantheon.elementary-calculator
+#    pkgs.pantheon.elementary-camera
+#    pkgs.pantheon.elementary-calendar
+#    pkgs.pantheon.elementary-code
+#    pkgs.pantheon.elementary-mail
+#    pkgs.pantheon.elementary-maps
+#    pkgs.pantheon.elementary-music
+#    pkgs.pantheon.elementary-tasks
+#  ];
 
   services.xserver.desktopManager.xterm.enable = false;
   services.openssh.enable = true;
@@ -99,7 +99,7 @@
     nixd
     sbctl
     zed-editor
-    pantheon-tweaks
+    #pantheon-tweaks
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
