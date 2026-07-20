@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./fish.nix
+    ./shell.nix
   ];
 
   nixpkgs = {

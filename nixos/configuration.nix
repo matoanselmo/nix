@@ -45,6 +45,12 @@
 
   # Enable Pantheon here instead
   services.desktopManager.pantheon.enable = true;
+  programs.hyprland.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+  };
 
   # Services
   services.printing.enable = true;
