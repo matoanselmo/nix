@@ -99,6 +99,10 @@
     nixd
     sbctl
     zed-editor
+    thunar
+    ghostty
+    helix
+    jq
     #pantheon-tweaks
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];

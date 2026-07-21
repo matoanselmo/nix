@@ -10,8 +10,10 @@
 
     shellAliases = {
       hms = "home-manager switch --flake ~/system#ruggy@nix";
+      nrs = "sudo nixos-rebuild switch --flake ~/system#nix";
       ll = "ls -la";
       ".." = "cd ..";
+      ".h" = "cd ~";
     };
 
     shellAbbrs = {
@@ -21,14 +23,12 @@
       gc = "git commit";
       gp = "git push";
       gl = "git log --oneline";
-      nrs = "sudo nixos-rebuild switch --flake ~/system#nix";
-      cat = "bat";
     };
 
     interactiveShellInit = ''
       set fish_greeting
 
-      fastfetch --logo none --structure "Title:OS:Kernel:Shell:DE:WM:CPU:GPU:Memory:Disk"
+      fastfetch
       echo ""
       fortune -s
     '';

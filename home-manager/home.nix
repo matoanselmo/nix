@@ -34,5 +34,9 @@
   home.packages = with pkgs; [
     orca-slicer
     elephant
+    walker
+    swaybg
+    lua-language-server
+    inputs.quickshell.packages.${pkgs.system}.default    
   ];
 }
