@@ -1,0 +1,239 @@
+// Ported from ~/.config/hypr. Hyprland settings with no niri equivalent are
+// noted where they would have gone.
+// Reference: /usr/share/doc/niri/wiki or https://niri-wm.github.io/niri/
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+
+        numlock
+    }
+
+    mouse {
+        accel-profile "flat"
+        accel-speed 0.0
+    }
+
+    // follow_mouse = 1. Capped at 0% so hovering a partly visible column
+    // focuses it without scrolling the view out from under the pointer.
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+// Outputs are left automatic, like the catch-all Hyprland monitor rule.
+// Run `niri msg outputs` for names if one ever needs its own block.
+
+// XCURSOR_SIZE / HYPRCURSOR_SIZE
+cursor {
+    xcursor-theme "Adwaita"
+    xcursor-size 8
+}
+
+layout {
+    gaps 5
+
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        off
+    }
+
+    border {
+        off
+    }
+}
+
+blur {
+    passes 2
+    offset 3
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd
+
+spawn-at-startup "quickshell"
+// Lock after 10 minutes idle (media playback holds it off), before suspend,
+// and on `loginctl lock-session`. The screen is never powered off. The lock
+// is Quickshell's; the sleep lets it come up before the machine suspends.
+spawn-at-startup "swayidle" "-w" "timeout" "600" "qs ipc call lock lock" "before-sleep" "qs ipc call lock lock; sleep 1" "lock" "qs ipc call lock lock"
+spawn-at-startup "dbus-update-activation-environment" "--all"
+spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
+
+screenshot-path "~/pictures/screenshots/%Y-%m-%d %H-%M-%S.png"
+
+environment {
+    // Force GTK & QT backends to recognize dark preferences
+    GTK_THEME "Adwaita-dark"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+    
+    // Ensure Wayland rendering is preferred over XWayland
+    MOZ_ENABLE_WAYLAND "1" 
+}
+
+
+animations {
+    window-open {
+        spring damping-ratio=0.78 stiffness=238 epsilon=0.0001
+    }
+
+    window-close {
+        duration-ms 150
+        curve "linear"
+    }
+
+    window-movement {
+        spring damping-ratio=0.78 stiffness=238 epsilon=0.0001
+    }
+
+    window-resize {
+        spring damping-ratio=0.78 stiffness=238 epsilon=0.0001
+    }
+
+    workspace-switch {
+        duration-ms 450
+        curve "cubic-bezier" 0.23 1 0.32 1
+    }
+}
+
+window-rule {
+    match is-active=false
+    opacity 0.8
+}
+
+window-rule {
+    background-effect {
+        blur true
+    }
+}
+
+// Quickshell's popup terminal (Mod+grave): a one-off foot, floating and
+// centred; the shell closes it as soon as it loses focus.
+window-rule {
+    match app-id="^shell-popup$"
+    open-floating true
+    open-focused true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.55; }
+}
+
+window-rule {
+    match title="[Ss]ettings"
+    match app-id="[Ss]ettings"
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    match app-id=r#"^zen"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+binds {
+    Mod+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
+    Mod+Shift+Return hotkey-overlay-title="Popup terminal" { spawn "qs" "ipc" "call" "terminal" "toggle"; }
+    Mod+X hotkey-overlay-title="File manager: thunar" { spawn "thunar"; }
+    Mod+Z hotkey-overlay-title="Editor: zed" { spawn "zed"; }
+    Mod+E hotkey-overlay-title="Browser: zen" { spawn "zen-beta"; }
+
+    Mod+Space hotkey-overlay-title="Application launcher" { spawn "qs" "ipc" "call" "launcher" "toggle"; }
+    Mod+Ctrl+V hotkey-overlay-title="Clipboard history" { spawn "qs" "ipc" "call" "clipboard" "toggle"; }
+    Mod+N hotkey-overlay-title="Notification centre" { spawn "qs" "ipc" "call" "notifications" "toggle"; }
+    Mod+Shift+N hotkey-overlay-title="Clear notifications" { spawn "qs" "ipc" "call" "notifications" "clear"; }
+    Mod+Shift+X hotkey-overlay-title="Exit niri" { spawn "qs" "ipc" "call" "logout" "toggle"; }
+    Mod+Escape hotkey-overlay-title="Keybinds" { spawn "qs" "ipc" "call" "keybinds" "toggle"; }
+
+    Mod+Q repeat=false { close-window; }
+    Mod+V { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    Mod+R hotkey-overlay-title="Reset window size" { spawn "sh" "-c" "niri msg action reset-window-height && niri msg action set-column-width 50%"; }
+
+    Mod+Shift+F { fullscreen-window; }
+    Mod+F { maximize-column; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+
+    Mod+Home  { focus-column-first; }
+    Mod+End   { focus-column-last; }
+
+    Mod+Up    { focus-workspace-up; }
+    Mod+Down  { focus-workspace-down; }
+    Mod+Shift+Up    { move-window-to-workspace-up; }
+    Mod+Shift+Down  { move-window-to-workspace-down; }
+
+    Mod+W { expand-column-to-available-width; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    Mod+C { center-column; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+    Mod+Shift+0 { move-window-to-workspace 10; }
+
+    Mod+Page_Down       { focus-workspace-down; }
+    Mod+Page_Up         { focus-workspace-up; }
+    Mod+Ctrl+Page_Down  { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up    { move-column-to-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+
+    Mod+O repeat=false { toggle-overview; }
+
+    Mod+Shift+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+Shift+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollDown cooldown-ms=150  { focus-column-right; }
+    Mod+WheelScrollUp cooldown-ms=150    { focus-column-left; }
+    Mod+MouseBack    { focus-column-left; }
+    Mod+MouseForward { focus-column-right; }
+
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
+    XF86AudioMute         allow-when-locked=true repeat=false { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute      allow-when-locked=true repeat=false { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    XF86AudioNext  allow-when-locked=true repeat=false { spawn "playerctl" "next"; }
+    XF86AudioPause allow-when-locked=true repeat=false { spawn "playerctl" "play-pause"; }
+    XF86AudioPlay  allow-when-locked=true repeat=false { spawn "playerctl" "play-pause"; }
+    XF86AudioPrev  allow-when-locked=true repeat=false { spawn "playerctl" "previous"; }
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    Mod+Alt+L hotkey-overlay-title="Lock the screen" { spawn "qs" "ipc" "call" "lock" "lock"; }
+    Mod+Shift+P { power-off-monitors; }
+}

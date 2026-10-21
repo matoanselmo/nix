@@ -1,50 +1,71 @@
 {
-  description = "Your new nix config";
+  description = "Ruggy's NixOS hosts: desktop and laptop";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    home-manager.url = "github:nix-community/home-manager/release-26.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Not in nixpkgs; community flake with a Home Manager module.
     zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
+      url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
 
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v1.1.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    quickshell = {
-      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
+    # Tessera, the Quickshell shell. Pinned in flake.lock; bump with
+    # `nix flake update tessera`.
+    tessera = {
+      url = "github:matoanselmo/tessera";
+      flake = false;
     };
   };
 
-  outputs = {
-    nixpkgs,
-    home-manager,
-    ...
-  } @ inputs: let
-  in {
-    nixosConfigurations = {
-      nix = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          inputs.lanzaboote.nixosModules.lanzaboote
-          ./nixos/configuration.nix
-        ];
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      disko,
+      ...
+    }@inputs:
+    let
+      mkHost =
+        hostName:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            home-manager.nixosModules.home-manager
+            ./modules/nixos
+            ./hosts/${hostName}
+            {
+              networking.hostName = hostName;
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = { inherit inputs; };
+                users.ruggy = ./modules/home;
+              };
+            }
+          ];
+        };
+    in
+    {
+      nixosConfigurations = {
+        desktop = mkHost "desktop";
+        laptop = mkHost "laptop";
       };
-    };
 
-    homeConfigurations = {
-      "ruggy@nix" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs;};
-        modules = [./home-manager/home.nix];
-      };
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
     };
-  };
 }
