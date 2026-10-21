@@ -2,7 +2,7 @@
 
 This repo (`matoanselmo/nix`) is the NixOS flake for both machines. The openSUSE Tumbleweed desktop's configs are still in the chezmoi repo `matoanselmo/dotfiles`, which is what this flake was ported from. Once both machines run NixOS, that repo can be retired.
 
-Older history in this repo (before the rewrite) is a previous single-host Hyprland config with lanzaboote, openssh and tailscale. Those aren't carried over (Secure Boot is off on the desktop); add them back only if Ruggy asks.
+Older history in this repo (before the rewrite) is a previous single-host Hyprland config.
 
 ## Hardware
 
@@ -12,6 +12,12 @@ Older history in this repo (before the rewrite) is a previous single-host Hyprla
 | `laptop` | Surface Pro 2017 (Pro 5), Intel Kaby Lake | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415`. Mainline kernel. Battery (5.12+) and performance modes (5.13+) work without linux-surface. Touch/pen and cameras don't, and that's accepted. Only switch to linux-surface if battery or power profiles stop working. |
 
 **The desktop's Windows drive (Intel SSDPEKNU512GZ, `nvme1n1` on openSUSE) must never be referenced:** not in disko, not in `fileSystems`, and not as a boot loader target. Windows is booted from the firmware boot menu. A `boot.loader.systemd-boot.windows` entry would only read that drive, but add one only if Ruggy asks.
+
+Services:
+
+- **Tailscale:** enabled on both hosts. Run `sudo tailscale up` once per machine.
+- **OpenSSH:** desktop only (`modules/nixos/ssh.nix`). Keys only, with no passwords and no root login. The authorized key is the desktop's own `id_ed25519.pub`, which is also the GitHub key. Add the laptop's key there once it has one.
+- **Secure Boot:** desktop only, with lanzaboote (`modules/nixos/secure-boot.nix`). Surface firmware only offers "Microsoft only" or "Microsoft & 3rd Party CA" and can't enroll custom keys, which lanzaboote needs. Microsoft documents this for the Surface Pro 7; it's assumed true for the Pro 5. The laptop therefore uses plain systemd-boot, with Secure Boot set to "None" in its UEFI.
 
 NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts at `/mnt/nas` (`modules/nixos/nas.nix`).
 
@@ -76,4 +82,14 @@ nix run nixpkgs#nixos-rebuild -- build --flake .#laptop
    `sudo nix --experimental-features 'nix-command flakes' run github:nix-community/disko/latest -- --mode destroy,format,mount --flake .#<host>`
 4. Compare hardware: `nixos-generate-config --no-filesystems --show-hardware-config` against `hosts/<host>/hardware.nix`, and commit any differences.
 5. Create `/mnt/etc/nixos/secrets/nas-smb` (mode 0600, root) with `username=ruggy` and `password=...`.
-6. `sudo nixos-install --flake .#<host>`, then set the user password with `nixos-enter --root /mnt -c 'passwd ruggy'`.
+6. `sudo nixos-install --flake github:matoanselmo/nix#<host>`, then set the user password with `nixos-enter --root /mnt -c 'passwd ruggy'`.
+   - On the desktop, lanzaboote generates Secure Boot keys into `/var/lib/sbctl` during the install. Leave Secure Boot **off** in the firmware for now.
+   - On the laptop, set Secure Boot to "None" in the Surface UEFI first.
+7. After the first boot: `sudo tailscale up`.
+
+## Secure Boot (desktop, after NixOS boots)
+
+1. Check that everything is signed: `sudo sbctl verify`. Everything except the kernel `bzImage` files should show as signed; lanzaboote embeds and checks the kernel itself.
+2. In the firmware, clear the Secure Boot keys / enter **Setup Mode**, but don't erase the DBX if the board offers a separate option. Boot back into NixOS.
+3. Enroll your keys **with Microsoft's**: `sudo sbctl enroll-keys --microsoft`. Microsoft's keys are required because the Vega GPU's option ROM and Windows' bootloader are signed by Microsoft. Without them there's no display at boot and Windows won't start.
+4. Turn Secure Boot on in the firmware, boot, and check with `bootctl status` (it should say "Secure Boot: enabled (user)").

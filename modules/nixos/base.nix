@@ -31,6 +31,12 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
+  # Log in once per machine with `sudo tailscale up`.
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+  };
+
   hardware.bluetooth.enable = true;
 
   services.pipewire = {

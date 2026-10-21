@@ -21,6 +21,12 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # Secure Boot (desktop only; see CLAUDE.md).
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.2.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Tessera, the Quickshell shell. Pinned in flake.lock; bump with
     # `nix flake update tessera`.
     tessera = {

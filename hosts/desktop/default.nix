@@ -5,6 +5,8 @@
   imports = [
     ./hardware.nix
     ../../modules/nixos/amd-graphics.nix
+    ../../modules/nixos/secure-boot.nix
+    ../../modules/nixos/ssh.nix
   ];
 
   # The 1 TB Crucial P3 that openSUSE is on today.
