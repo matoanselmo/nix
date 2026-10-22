@@ -11,4 +11,7 @@
   # The Surface's internal Samsung NVMe SSD.
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415";
   my.disk.swapSize = "8G";
+
+  # Skip the boot menu. Hold Space while booting to get it back (rollbacks).
+  boot.loader.timeout = 0;
 }
