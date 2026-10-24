@@ -167,11 +167,11 @@
     "tessera": {
       "flake": false,
       "locked": {
-        "lastModified": 1792361334,
-        "narHash": "sha256-VzTKnKXZ3t+ArDyIEM2RgqCtLv27Ji6abkMOlqluzaM=",
+        "lastModified": 1792655484,
+        "narHash": "sha256-FRbBkvazjGgWIZ876NRNScZFNWk9vPKzrOKtS2E4tpk=",
         "owner": "matoanselmo",
         "repo": "tessera",
-        "rev": "f21501c7007a98a6a59eb2109053a772fb002c61",
+        "rev": "2db6fafd56b2abb61a246badda8aa6c8ddd36ac8",
         "type": "github"
       },
       "original": {

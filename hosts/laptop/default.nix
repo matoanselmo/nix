@@ -14,4 +14,9 @@
 
   # Skip the boot menu. Hold Space while booting to get it back (rollbacks).
   boot.loader.timeout = 0;
+
+  programs.git.config.user = {
+    name = "ruggy@laptop";
+    email = "mateusanselmoguarino@gmail.com";
+  };
 }

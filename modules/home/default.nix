@@ -31,7 +31,6 @@
     # Apps and CLI
     fastfetch
     rustup
-    prusa-slicer
     orca-slicer
   ];
 
@@ -39,6 +38,14 @@
   services.polkit-gnome.enable = true;
 
   programs.git.enable = true;
+
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+
+    options = [ "--cmd cd" ];
+  };
 
   home.stateVersion = "26.11";
 }

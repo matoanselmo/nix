@@ -16,6 +16,12 @@ input {
         accel-speed 0.0
     }
 
+    touchpad {
+        // Uncomment or remove natural-scroll to invert/disable it depending on current state
+        natural-scroll
+        tap
+    }
+
     // follow_mouse = 1. Capped at 0% so hovering a partly visible column
     // focuses it without scrolling the view out from under the pointer.
     focus-follows-mouse max-scroll-amount="0%"
@@ -27,7 +33,7 @@ input {
 // XCURSOR_SIZE / HYPRCURSOR_SIZE
 cursor {
     xcursor-theme "Adwaita"
-    xcursor-size 8
+    xcursor-size 24
 }
 
 layout {
