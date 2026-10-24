@@ -33,6 +33,7 @@
     rustup
     orca-slicer
     nixd
+    claude-code # unfree; allowed in base.nix
   ];
 
   services.cliphist.enable = true;
