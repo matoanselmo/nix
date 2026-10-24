@@ -32,6 +32,7 @@
     fastfetch
     rustup
     orca-slicer
+    nixd
   ];
 
   services.cliphist.enable = true;
