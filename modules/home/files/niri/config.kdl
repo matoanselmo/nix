@@ -83,9 +83,9 @@ environment {
     // Force GTK & QT backends to recognize dark preferences
     GTK_THEME "Adwaita-dark"
     QT_QPA_PLATFORMTHEME "qt6ct"
-    
+
     // Ensure Wayland rendering is preferred over XWayland
-    MOZ_ENABLE_WAYLAND "1" 
+    MOZ_ENABLE_WAYLAND "1"
 }
 
 
@@ -150,7 +150,7 @@ binds {
     Mod+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
     Mod+Shift+Return hotkey-overlay-title="Popup terminal" { spawn "qs" "ipc" "call" "terminal" "toggle"; }
     Mod+X hotkey-overlay-title="File manager: thunar" { spawn "thunar"; }
-    Mod+Z hotkey-overlay-title="Editor: zed" { spawn "zed"; }
+    Mod+Z hotkey-overlay-title="Editor: zed" { spawn "zeditor"; }
     Mod+E hotkey-overlay-title="Browser: zen" { spawn "zen-beta"; }
 
     Mod+Space hotkey-overlay-title="Application launcher" { spawn "qs" "ipc" "call" "launcher" "toggle"; }

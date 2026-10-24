@@ -19,14 +19,11 @@
     wl-clipboard
     xwayland-satellite
     xdg-utils
-    ripgrep # Tessera's `/` file search
+    ripgrep
     pavucontrol
     bluetui
     qt6Packages.qt6ct
-
-    # The niri config spawns `zed`; nixpkgs names the binary `zeditor`.
     zed-editor
-    (writeShellScriptBin "zed" ''exec ${zed-editor}/bin/zeditor "$@"'')
 
     # Apps and CLI
     fastfetch
