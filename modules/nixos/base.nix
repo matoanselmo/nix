@@ -52,6 +52,8 @@
   zramSwap.enable = true;
 
   programs.fish.enable = true;
+  # Needed for the hosts' programs.git.config to reach /etc/gitconfig.
+  programs.git.enable = true;
   users.users.ruggy = {
     isNormalUser = true;
     shell = pkgs.fish;
