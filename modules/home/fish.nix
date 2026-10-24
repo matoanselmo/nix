@@ -4,7 +4,6 @@
     interactiveShellInit = ''
       set fish_greeting ""
 
-      # Colours from the old fish_frozen_theme.fish
       set --global fish_color_autosuggestion 969896
       set --global fish_color_cancel --reverse
       set --global fish_color_command c397d8

@@ -1,7 +1,5 @@
-# Hand-written from `lspci -k` on the running openSUSE install, since
-# nixos-generate-config can't run there. On install day, compare it with
-#   nixos-generate-config --no-filesystems --show-hardware-config
-# and take anything that differs. Filesystems come from disk.nix (disko).
+# From `nixos-generate-config --no-filesystems --show-hardware-config` on the
+# desktop. Filesystems come from disk.nix (disko).
 { lib, modulesPath, ... }:
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];

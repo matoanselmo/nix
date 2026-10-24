@@ -9,7 +9,6 @@
     ../../modules/nixos/ssh.nix
   ];
 
-  # The 1 TB Crucial P3 that openSUSE is on today.
   my.disk.device = "/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E";
 
   programs.git.config.user = {

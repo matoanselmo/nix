@@ -2,8 +2,7 @@
 # niri config expect to find on the system.
 { pkgs, ... }:
 {
-  # Also sets up xdg-desktop-portal (gnome + gtk, the same preferences as the
-  # old niri-portals.conf) and gnome-keyring.
+  # Also sets up xdg-desktop-portal (gnome + gtk) and gnome-keyring.
   programs.niri.enable = true;
 
   services.greetd = {
