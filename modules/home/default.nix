@@ -33,12 +33,13 @@
     rustup
     orca-slicer
     nixd
-    claude-code # unfree; allowed in base.nix
+    claude-code
   ];
 
   services.cliphist.enable = true;
   services.polkit-gnome.enable = true;
 
+  programs.nix-ld.enable = true;
   programs.git.enable = true;
 
   programs.zoxide = {
