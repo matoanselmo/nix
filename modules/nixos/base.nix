@@ -74,6 +74,8 @@
     unzip
   ];
 
+  programs.nix-ld.enable = true;
+
   # Version the first install was made with. Don't bump it on upgrades.
   system.stateVersion = "26.11";
 }

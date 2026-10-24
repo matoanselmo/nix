@@ -31,12 +31,12 @@
     orca-slicer
     nixd
     claude-code
+    discord
   ];
 
   services.cliphist.enable = true;
   services.polkit-gnome.enable = true;
 
-  programs.nix-ld.enable = true;
   programs.git.enable = true;
 
   programs.zoxide = {
