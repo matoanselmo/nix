@@ -17,7 +17,7 @@ Services:
 
 - **Tailscale:** enabled on both hosts. Run `sudo tailscale up` once per machine.
 - **OpenSSH:** desktop only (`modules/nixos/ssh.nix`). Keys only, with no passwords and no root login. The authorized key is the laptop's `id_ed25519.pub`.
-- **Secure Boot:** desktop only, with lanzaboote (`modules/nixos/secure-boot.nix`). Surface firmware only offers "Microsoft only" or "Microsoft & 3rd Party CA" and can't enroll custom keys, which lanzaboote needs. Microsoft documents this for the Surface Pro 7; it's assumed true for the Pro 5. The laptop therefore uses plain systemd-boot, with Secure Boot set to "None" in its UEFI.
+- **Secure Boot:** desktop only, with lanzaboote (`modules/nixos/secure-boot.nix`). Surface firmware only offers "Microsoft only" or "Microsoft & 3rd Party CA" and can't enroll custom keys, which lanzaboote needs (checked in the Pro 5's UEFI). The laptop therefore uses plain systemd-boot, with Secure Boot set to "None" in its UEFI.
 
 NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts at `/mnt/nas` (`modules/nixos/nas.nix`).
 
@@ -80,9 +80,9 @@ nixos-rebuild build --flake .#laptop
    - On the laptop, Secure Boot must be "None" in the Surface UEFI.
 5. After the first boot: `sudo tailscale up`.
 
-## Secure Boot (desktop, still to do)
+## Secure Boot (desktop)
 
-Keys are generated in `/var/lib/sbctl` but not enrolled yet; Secure Boot is off.
+Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To redo it (e.g. after a reinstall):
 
 1. Check that everything is signed: `sudo sbctl verify`. Everything except the kernel `bzImage` files should show as signed; lanzaboote embeds and checks the kernel itself.
 2. In the firmware, clear the Secure Boot keys / enter **Setup Mode**, but don't erase the DBX if the board offers a separate option. Boot back into NixOS.
