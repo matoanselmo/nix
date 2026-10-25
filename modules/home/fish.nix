@@ -1,6 +1,17 @@
+{ osConfig, ... }:
+let
+  flake = "~/System#${osConfig.networking.hostName}";
+in
 {
   programs.fish = {
     enable = true;
+    shellAbbrs = {
+      nrs = "sudo nixos-rebuild switch --flake ${flake}";
+      nrb = "sudo nixos-rebuild boot --flake ${flake}";
+      nrt = "sudo nixos-rebuild test --flake ${flake}";
+      nrd = "nixos-rebuild build --flake ${flake}";
+      nfu = "nix flake update --flake ~/System";
+    };
     interactiveShellInit = ''
       set fish_greeting ""
 

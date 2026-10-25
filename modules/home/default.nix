@@ -31,7 +31,11 @@
     orca-slicer
     nixd
     claude-code
+
+    # Other random stuff
     discord
+    prismlauncher
+    freecad
   ];
 
   services.cliphist.enable = true;
