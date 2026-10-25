@@ -21,6 +21,8 @@
     xdg-utils
     ripgrep
     wtype # Tessera's clipboard copy & paste
+    grim # Tessera's screenshot tile
+    slurp
     pavucontrol
     bluetui
     qt6Packages.qt6ct
