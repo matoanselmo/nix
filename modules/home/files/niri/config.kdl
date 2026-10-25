@@ -231,6 +231,10 @@ binds {
     XF86AudioMute         allow-when-locked=true repeat=false { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
     XF86AudioMicMute      allow-when-locked=true repeat=false { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
 
+    // Through Tessera so its OSD shows; on the desktop (no backlight) they do nothing.
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "qs" "ipc" "call" "brightness" "up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "qs" "ipc" "call" "brightness" "down"; }
+
     XF86AudioNext  allow-when-locked=true repeat=false { spawn "playerctl" "next"; }
     XF86AudioPause allow-when-locked=true repeat=false { spawn "playerctl" "play-pause"; }
     XF86AudioPlay  allow-when-locked=true repeat=false { spawn "playerctl" "play-pause"; }
