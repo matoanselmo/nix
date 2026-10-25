@@ -139,6 +139,7 @@
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "nixpkgs": "nixpkgs",
+        "solidcraft": "solidcraft",
         "tessera": "tessera",
         "zen-browser": "zen-browser"
       }
@@ -161,6 +162,26 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "solidcraft": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792963895,
+        "narHash": "sha256-43VnFxSdmE4nJp3g9p+gxBlkHS64piO7Sf99RpszMag=",
+        "owner": "tangency-labs",
+        "repo": "solidcraft",
+        "rev": "62d55c3b29f488ef084234080493b6fdf1bb93d4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tangency-labs",
+        "repo": "solidcraft",
         "type": "github"
       }
     },

@@ -33,6 +33,12 @@
       url = "github:matoanselmo/tessera";
       flake = false;
     };
+
+    # Not in nixpkgs; Rust CAD app with its own flake (desktop only).
+    solidcraft = {
+      url = "github:tangency-labs/solidcraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

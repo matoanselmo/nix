@@ -35,7 +35,7 @@
     # Other random stuff
     discord
     prismlauncher
-    freecad
+    btop
   ];
 
   services.cliphist.enable = true;
