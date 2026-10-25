@@ -20,6 +20,7 @@
     xwayland-satellite
     xdg-utils
     ripgrep
+    wtype # Tessera's clipboard copy & paste
     pavucontrol
     bluetui
     qt6Packages.qt6ct
