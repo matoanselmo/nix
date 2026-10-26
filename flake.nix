@@ -21,6 +21,13 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # Not in nixpkgs; repackages Helium's .deb releases, with a Home Manager
+    # module (laptop only; see my.browser).
+    helium = {
+      url = "github:oxcl/nix-flake-helium-browser";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Secure Boot (desktop only; see CLAUDE.md).
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.2.0";

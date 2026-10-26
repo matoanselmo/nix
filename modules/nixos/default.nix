@@ -3,6 +3,7 @@
 {
   imports = [
     ./base.nix
+    ./browser.nix
     ./desktop.nix
     ./disk.nix
     ./nas.nix
