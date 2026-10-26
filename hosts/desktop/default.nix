@@ -12,6 +12,7 @@
 
   environment.systemPackages = [
     inputs.solidcraft.packages.${pkgs.stdenv.hostPlatform.system}.solidcraft
+    pkgs.rustup
   ];
 
   my.disk.device = "/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E";
