@@ -26,7 +26,7 @@ NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts a
 - **Compositor:** niri. The config is a verbatim KDL file at `modules/home/files/niri/config.kdl`; keep it KDL, because Tessera's keybinds overlay parses it.
 - **Shell UI:** Tessera (`github:matoanselmo/tessera`, flake input `tessera`) on upstream Quickshell (`pkgs.quickshell`).
 - **Login:** greetd + tuigreet (`--time --remember --cmd niri-session`).
-- **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours in `modules/home/fish.nix`), Zed, Zen Browser (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`, set as the default browser, spawned by `Mod+E`).
+- **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours in `modules/home/fish.nix`), Zed, and a browser picked per host by `my.browser` (`modules/nixos/browser.nix`): Zen Browser on the desktop (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`) and Helium on the laptop (from `github:oxcl/nix-flake-helium-browser`; binary `helium`). The host's browser is the default browser, and the `browser` command runs it, which is what niri's `Mod+E` spawns.
 - **Theme:** Adwaita-dark (GTK), qt6ct for Qt, Adwaita cursor at size 8.
 - **Channel:** nixos-unstable.
 
@@ -34,12 +34,12 @@ NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts a
 
 ```
 flake.nix                 inputs + mkHost; both hosts share modules/nixos and modules/home
-hosts/<host>/default.nix  host-only imports, my.disk.device, git user
+hosts/<host>/default.nix  host-only imports, my.disk.device, my.browser, git user
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
-modules/nixos/            base, desktop (niri/greetd/thunar/fonts), disk (disko + snapper),
+modules/nixos/            base, browser (my.browser), desktop (niri/greetd/thunar/fonts), disk (disko + snapper),
                           nas, amd-graphics, intel-graphics, laptop-power,
                           secure-boot (desktop), ssh (desktop)
-modules/home/             Home Manager for user ruggy: browser (Zen), niri, quickshell (Tessera),
+modules/home/             Home Manager for user ruggy: browser (Zen or Helium), niri, quickshell (Tessera),
                           foot, fish, gtk
 ```
 

@@ -11,6 +11,9 @@
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415";
   my.disk.swapSize = "8G";
 
+  # Helium instead of Zen, on this machine only.
+  my.browser = "helium";
+
   # Skip the boot menu. Hold Space while booting to get it back (rollbacks).
   boot.loader.timeout = 0;
 
