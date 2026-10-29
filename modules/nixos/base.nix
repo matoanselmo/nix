@@ -61,6 +61,7 @@
       "networkmanager"
       "video"
       "dialout"
+      "loop"
       "plugdev"
     ];
   };

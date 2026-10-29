@@ -37,6 +37,7 @@
     discord
     prismlauncher
     btop
+    peazip
   ];
 
   services.cliphist.enable = true;
