@@ -60,6 +60,8 @@
       "wheel"
       "networkmanager"
       "video"
+      "dialout"
+      "plugdev"
     ];
   };
 

@@ -8,6 +8,7 @@
     ../../modules/nixos/amd-graphics.nix
     ../../modules/nixos/secure-boot.nix
     ../../modules/nixos/ssh.nix
+    ../../modules/nixos/embedded.nix
   ];
 
   environment.systemPackages = [
