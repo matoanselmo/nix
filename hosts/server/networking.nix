@@ -26,6 +26,10 @@ in
     "1.1.1.1"
   ];
 
+  # The TP-Link stick starts as a driver CD (0bda:1a2b) and only becomes
+  # the WiFi adapter after usb_modeswitch flips it.
+  hardware.usb-modeswitch.enable = true;
+
   networking.wireless = {
     enable = true;
     interfaces = [ wifi ];
