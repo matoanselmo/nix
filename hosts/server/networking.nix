@@ -67,8 +67,11 @@ in
     "can_raw"
     "gs_usb"
   ];
+  # The WiFi stick appears late (modeswitch, then the driver), after the
+  # wpa_supplicant unit has given up waiting for it; start it when it shows up.
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="change|add", KERNEL=="can*", ATTR{tx_queue_len}="1024"
+    SUBSYSTEM=="net", ACTION=="add", KERNEL=="${wifi}", TAG+="systemd", ENV{SYSTEMD_WANTS}+="wpa_supplicant-${wifi}.service"
   '';
 
   # Route the wired LAN out through the WiFi.
