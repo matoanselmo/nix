@@ -29,6 +29,9 @@ in
   # The TP-Link stick starts as a driver CD (0bda:1a2b) and only becomes
   # the WiFi adapter after usb_modeswitch flips it.
   hardware.usb-modeswitch.enable = true;
+  # In WiFi mode it's 2357:0141, driven by rtw89_8852au, which the default
+  # (6.18) kernel doesn't have.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.wireless = {
     enable = true;
