@@ -41,6 +41,13 @@ in
     networks."TELUS9825".pskRaw = "ext:psk_home";
   };
 
+  # After modeswitch the stick can come back as wlp0s20f0u2 instead of the
+  # MAC-based name, so pin the name everything here refers to.
+  systemd.network.links."10-wifi" = {
+    matchConfig.PermanentMACAddress = "a8:6e:84:a1:ca:08";
+    linkConfig.Name = wifi;
+  };
+
   systemd.network.networks = {
     "10-wifi" = {
       matchConfig.Name = wifi;
