@@ -265,28 +265,34 @@ in
 
   # klipper-backup stays a git checkout in ~/klipper-backup; its .env (with
   # the GitHub token) is restored from the backup and never committed.
-  systemd.services.klipper-backup-on-boot = backupService {
-    Type = "oneshot";
-    ExecStart = "${pkgs.bash}/bin/bash -c '${home}/klipper-backup/script.sh -c \"New Backup on boot - $(date +\"%%x - %%X\")\"'";
-  } // {
-    description = "Klipper Backup on boot";
-    wantedBy = [ "multi-user.target" ];
-  };
-  systemd.services.klipper-backup-filewatch = backupService {
-    ExecStart = "${pkgs.bash}/bin/bash ${home}/klipper-backup/utils/filewatch.sh";
-    Restart = "always";
-    RestartSec = 30;
-  } // {
-    description = "Klipper Backup filewatch";
-    wantedBy = [ "multi-user.target" ];
-  };
+  systemd.services.klipper-backup-on-boot =
+    backupService {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${home}/klipper-backup/script.sh -c \"New Backup on boot - $(date +\"%%x - %%X\")\"'";
+    }
+    // {
+      description = "Klipper Backup on boot";
+      wantedBy = [ "multi-user.target" ];
+    };
+  systemd.services.klipper-backup-filewatch =
+    backupService {
+      ExecStart = "${pkgs.bash}/bin/bash ${home}/klipper-backup/utils/filewatch.sh";
+      Restart = "always";
+      RestartSec = 30;
+    }
+    // {
+      description = "Klipper Backup filewatch";
+      wantedBy = [ "multi-user.target" ];
+    };
   # Was a cron job every 4 hours.
-  systemd.services.klipper-backup = backupService {
-    Type = "oneshot";
-    ExecStart = "${pkgs.bash}/bin/bash -c '${home}/klipper-backup/script.sh -c \"Timer backup - $(date +\"%%x - %%X\")\"'";
-  } // {
-    description = "Klipper Backup (timer)";
-  };
+  systemd.services.klipper-backup =
+    backupService {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${home}/klipper-backup/script.sh -c \"Timer backup - $(date +\"%%x - %%X\")\"'";
+    }
+    // {
+      description = "Klipper Backup (timer)";
+    };
 
   systemd.timers.klipper-backup = {
     wantedBy = [ "timers.target" ];
