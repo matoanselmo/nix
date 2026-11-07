@@ -18,6 +18,35 @@
   };
   nixpkgs.config.allowUnfree = true;
 
+  # patchelf 0.19.2 breaks binaries patched interpreter-first, which is how
+  # gcc-arm-embedded is patched: every arm-none-eabi-* and cc1 segfault in
+  # ld.so (NixOS/nixpkgs#576412, NixOS/patchelf#674). That breaks the server's
+  # Klipper firmware builds and the desktop's embedded toolchain. This is the
+  # package's own preFixup with the rpath set first, which works; drop it once
+  # nixpkgs' patchelf has the fix.
+  nixpkgs.overlays = [
+    (final: prev: {
+      gcc-arm-embedded = prev.gcc-arm-embedded.overrideAttrs {
+        preFixup = ''
+          find $out -type f | while read f; do
+            patchelf "$f" > /dev/null 2>&1 || continue
+            patchelf --set-rpath ${
+              final.lib.makeLibraryPath [
+                "$out"
+                final.stdenv.cc.cc
+                final.ncurses6
+                final.libxcrypt-legacy
+                final.xz
+                final.zstd
+              ]
+            } "$f" || true
+            patchelf --set-interpreter $(cat ${final.stdenv.cc}/nix-support/dynamic-linker) "$f" || true
+          done
+        '';
+      };
+    })
+  ];
+
   # Boots from this drive's own ESP only. Windows lives on another drive and
   # is reached from the firmware boot menu; see CLAUDE.md before adding
   # boot.loader.systemd-boot.windows.
