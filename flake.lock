@@ -91,6 +91,40 @@
         "type": "github"
       }
     },
+    "klipper-led-effect": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1773699820,
+        "narHash": "sha256-ZGYk1Qdm7GFEiS7xepjqIlo1L/AZZKEEIOWdG9UA+4I=",
+        "owner": "julianschill",
+        "repo": "klipper-led_effect",
+        "rev": "266f1049c7172c2fba0da4a52314dcfc0c3bb56f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "julianschill",
+        "repo": "klipper-led_effect",
+        "rev": "266f1049c7172c2fba0da4a52314dcfc0c3bb56f",
+        "type": "github"
+      }
+    },
+    "klipper-tmc-autotune": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792955322,
+        "narHash": "sha256-h+d1LQ1QuHVgwznW0zYylmBH9s1TiNa8fSGqRpJCf14=",
+        "owner": "andrewmcgr",
+        "repo": "klipper_tmc_autotune",
+        "rev": "9f88cf7a8cabf5890d56fee2c688f2fe61087683",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andrewmcgr",
+        "repo": "klipper_tmc_autotune",
+        "rev": "9f88cf7a8cabf5890d56fee2c688f2fe61087683",
+        "type": "github"
+      }
+    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane",
@@ -112,6 +146,57 @@
         "owner": "nix-community",
         "ref": "v1.2.0",
         "repo": "lanzaboote",
+        "type": "github"
+      }
+    },
+    "mainsail-config": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1732477463,
+        "narHash": "sha256-gDMAUDqf8no66Jc/jutFNwu7RbD+/qD/6Q6GLWOAA/k=",
+        "owner": "mainsail-crew",
+        "repo": "mainsail-config",
+        "rev": "ff3869a621db17ce3ef660adbbd3fa321995ac42",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mainsail-crew",
+        "repo": "mainsail-config",
+        "rev": "ff3869a621db17ce3ef660adbbd3fa321995ac42",
+        "type": "github"
+      }
+    },
+    "mobileraker-companion": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781556825,
+        "narHash": "sha256-fyeFmaojVR2PvN+vMDSGLD/pJpzEhLJ61lF+/JzxRsc=",
+        "owner": "Clon1998",
+        "repo": "mobileraker_companion",
+        "rev": "d455af67d6e9bb5d194121616cd0863043bee2c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Clon1998",
+        "repo": "mobileraker_companion",
+        "rev": "d455af67d6e9bb5d194121616cd0863043bee2c7",
+        "type": "github"
+      }
+    },
+    "moonraker-timelapse": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702749687,
+        "narHash": "sha256-ZYSeSn3OTManyTbNOnCfhormjFMgomNk3VXOVqBr9zg=",
+        "owner": "mainsail-crew",
+        "repo": "moonraker-timelapse",
+        "rev": "c7fff11e542b95e0e15b8bb1443cea8159ac0274",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mainsail-crew",
+        "repo": "moonraker-timelapse",
+        "rev": "c7fff11e542b95e0e15b8bb1443cea8159ac0274",
         "type": "github"
       }
     },
@@ -158,7 +243,12 @@
         "disko": "disko",
         "helium": "helium",
         "home-manager": "home-manager",
+        "klipper-led-effect": "klipper-led-effect",
+        "klipper-tmc-autotune": "klipper-tmc-autotune",
         "lanzaboote": "lanzaboote",
+        "mainsail-config": "mainsail-config",
+        "mobileraker-companion": "mobileraker-companion",
+        "moonraker-timelapse": "moonraker-timelapse",
         "nixpkgs": "nixpkgs",
         "solidcraft": "solidcraft",
         "tessera": "tessera",
