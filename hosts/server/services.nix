@@ -1,27 +1,15 @@
 # What used to run as Docker Compose stacks under Dockge, now native NixOS
-# services on the same ports. Dropped: Dockge, AMP, Ollama/Open-WebUI,
+# services on the same ports. Dropped: Dockge, AMP, Ollama/Open-WebUI, Vaultwarden,
 # OrcaSlicer, MongoDB, Nginx Proxy Manager (it had no proxy hosts; nginx
 # itself is in printer.nix). Tailscale comes from core.nix.
 #
-# Data to restore from the Ubuntu backup (see CLAUDE.md):
-#   Vaultwarden  /opt/stacks/bitwarden/vw-data  -> /var/lib/vaultwarden
+# Data from the Ubuntu install, if kept (see CLAUDE.md):
 #   Spoolman     ~/spoolman/data                -> /var/lib/private/spoolman
 #   Beszel       /opt/stacks/beszel/beszel_data -> /var/lib/beszel-hub
 #   Pi-hole      teleporter export, through the web UI
 #   Tailscale    /opt/stacks/tailscale/tailscale-state -> /var/lib/tailscale
 { lib, pkgs, ... }:
 {
-  # Reached through `tailscale serve` on the tailnet name below, as before.
-  services.vaultwarden = {
-    enable = true;
-    config = {
-      DOMAIN = "https://matoserver.tail23b98f.ts.net";
-      SIGNUPS_ALLOWED = true;
-      ROCKET_ADDRESS = "127.0.0.1";
-      ROCKET_PORT = 7000;
-    };
-  };
-
   services.spoolman = {
     enable = true;
     listen = "0.0.0.0";

@@ -26,7 +26,7 @@ Server (`hosts/server/`):
 
 - **Networking** (`networking.nix`): WiFi uplink at static `192.168.1.200` (gateway `192.168.1.254`, SSID `TELUS9825`); `enp3s0` is a private LAN at `192.168.100.1/24` with NAT and Kea DHCP (`.10`–`.100`); `can0` at 1 Mbit with txqueuelen 1024. systemd-networkd, no NetworkManager, no resolved (Pi-hole owns port 53). `wakepc` wakes the desktop.
 - **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker, Mainsail on port 1803 (keep it there; Ruggy chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`) and klipper-backup (`~/klipper-backup`, timer every 4 h). `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit.
-- **Services** (`services.nix`): Vaultwarden (127.0.0.1:7000, through `tailscale serve`), Spoolman (7912), Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100), Glances (61208), Beszel hub (4000) and agent.
+- **Services** (`services.nix`): Spoolman (7912), Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100), Glances (61208), Beszel hub (4000) and agent.
 - **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
 
 ## Preferences
@@ -106,7 +106,7 @@ Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To re
 2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600, root) with `psk_home=<passphrase>`.
 3. Restore, then fix ownership:
    - `home.tar.gz` and `srv.tar.gz` to `/`, owned by `ruggy:users`. Remove the old Kalico-only keys from `~/printer_data/config` (see below).
-   - `vw-data/*` to `/var/lib/vaultwarden` (owner `vaultwarden`), `tailscale-state/*` to `/var/lib/tailscale`, `beszel_data/*` to `/var/lib/beszel-hub`, and `spoolman/data/*` to `/var/lib/private/spoolman`. Stop each service before restoring and start it again afterwards.
+   - `tailscale-state/*` to `/var/lib/tailscale`, `beszel_data/*` to `/var/lib/beszel-hub`, and `spoolman/data/*` to `/var/lib/private/spoolman`. Stop each service before restoring and start it again afterwards.
    - The SSH host keys to `/etc/ssh/`. Run `sudo smbpasswd -a ruggy`. Import the teleporter zip in Pi-hole's web UI.
    - In Beszel, edit the matoserver system to `127.0.0.1`, port `45876`.
 4. **Kalico to Klipper:** stock Klipper rejects Kalico's `pid_version`, `pid_target` and `pid_tolerance` (in the `SAVE_CONFIG` block of `printer.cfg`) and `is_non_critical` (in `hardware/mcu.cfg`). Delete those lines.

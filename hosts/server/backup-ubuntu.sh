@@ -32,7 +32,6 @@ tar -C / -czpf "$out/home.tar.gz" \
   home/ruggy/projects \
   home/ruggy/.ssh
 tar -C / -czpf "$out/stacks.tar.gz" \
-  opt/stacks/bitwarden/vw-data \
   opt/stacks/beszel/beszel_data \
   opt/stacks/tailscale/tailscale-state \
   opt/stacks/pihole \
