@@ -47,6 +47,12 @@ in
     matchConfig.PermanentMACAddress = "a8:6e:84:a1:ca:08";
     linkConfig.Name = wifi;
   };
+  # The wired port's PCI bus number isn't stable either (it has come up as
+  # enp2s0), so pin it too.
+  systemd.network.links."10-lan" = {
+    matchConfig.PermanentMACAddress = "70:20:84:0f:05:cb";
+    linkConfig.Name = lan;
+  };
 
   systemd.network.networks = {
     "10-wifi" = {
