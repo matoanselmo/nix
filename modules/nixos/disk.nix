@@ -18,6 +18,16 @@ in
         it can never resolve to a different drive.
       '';
     };
+    rootSize = lib.mkOption {
+      type = lib.types.str;
+      default = "100%";
+      example = "128G";
+      description = ''
+        Size of the btrfs system partition. The default fills the drive; a
+        smaller size leaves room for more partitions after it (the server's
+        NAS).
+      '';
+    };
     swapSize = lib.mkOption {
       type = lib.types.str;
       default = "16G";
@@ -44,7 +54,7 @@ in
             };
           };
           root = {
-            size = "100%";
+            size = config.my.disk.rootSize;
             content = {
               type = "btrfs";
               extraArgs = [

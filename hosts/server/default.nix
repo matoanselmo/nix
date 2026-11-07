@@ -12,7 +12,28 @@
     ../../modules/nixos/ssh.nix
   ];
 
+  # 1 TB drive: a small system partition, and the rest is the NAS.
   my.disk.device = "/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E";
+  my.disk.rootSize = "128G";
+  disko.devices.disk.main.content.partitions.nas = {
+    size = "100%"; # disko places 100% partitions last
+    content = {
+      type = "btrfs";
+      extraArgs = [
+        "-f"
+        "-L"
+        "nas"
+      ];
+      subvolumes."/@share" = {
+        mountpoint = "/srv/share";
+        mountOptions = [
+          "compress=zstd"
+          "noatime"
+        ];
+      };
+    };
+  };
+  services.btrfs.autoScrub.fileSystems = [ "/srv/share" ];
 
   users.users.ruggy = {
     extraGroups = [
