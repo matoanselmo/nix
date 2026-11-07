@@ -1,4 +1,4 @@
-# matoserver: Intel Kaby Lake desktop board, Samsung MZVLW256 NVMe.
+# matoserver: Intel Kaby Lake desktop board, Crucial P3 1 TB NVMe (from the desktop).
 # Written by hand from the running Ubuntu install (drivers in use: nvme,
 # ahci, xhci_hcd). Regenerate with `nixos-generate-config --show-hardware-config`
 # after installing, and keep only the initrd/kernel module lines; disko owns

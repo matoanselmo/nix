@@ -8,9 +8,9 @@ Older history in this repo (before the rewrite) is a previous single-host Hyprla
 
 | Host | Machine | Notes |
 | --- | --- | --- |
-| `desktop` | Ryzen 5 5500, Radeon RX Vega 56/64 (amdgpu), Intel I225-V Ethernet, Intel 3168 Wi-Fi | NixOS drive: `/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E` (1 TB Crucial P3) |
+| `desktop` | Ryzen 5 5500, Radeon RX Vega 56/64 (amdgpu), Intel I225-V Ethernet, Intel 3168 Wi-Fi | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K178413` (256 GB Samsung, formerly the server's) |
 | `laptop` | Surface Pro 2017 (Pro 5), Intel Kaby Lake | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415`. Mainline kernel. Battery (5.12+) and performance modes (5.13+) work without linux-surface. Touch/pen and cameras don't, and that's accepted. Only switch to linux-surface if battery or power profiles stop working. |
-| `server` (hostname `matoserver`) | Intel Kaby Lake (HD 630), 16 GB, Realtek RTL8111 (`enp3s0`), TP-Link USB WiFi (`wlxa86e84a1ca08`) | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K178413` (256 GB). Headless: `core.nix` only, no desktop or Home Manager (`mkHost { workstation = false; }`). |
+| `server` (hostname `matoserver`) | Intel Kaby Lake (HD 630), 16 GB, Realtek RTL8111 (`enp3s0`), TP-Link USB WiFi (`wlxa86e84a1ca08`) | NixOS drive: `/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E` (1 TB Crucial P3, formerly the desktop's). Headless: `core.nix` only, no desktop or Home Manager (`mkHost { workstation = false; }`). |
 
 **The desktop's Windows drive (Intel SSDPEKNU512GZ) must never be referenced:** not in disko, not in `fileSystems`, and not as a boot loader target. Windows is booted from the firmware boot menu. A `boot.loader.systemd-boot.windows` entry would only read that drive, but add one only if Ruggy asks.
 
@@ -82,7 +82,7 @@ nixos-rebuild build --flake .#server
 
 ## Reinstalling a host (Ruggy runs these from the NixOS installer)
 
-1. Check the target drive: `ls -l /dev/disk/by-id/`. It must be the CT1000P3 (desktop) or the Surface SSD (laptop).
+1. Check the target drive: `ls -l /dev/disk/by-id/`. It must be the Samsung MZVLW256 (desktop), the CT1000P3 (server) or the Surface SSD (laptop).
 2. Partition and mount with disko (this **erases** `my.disk.device`):
    `sudo nix --experimental-features 'nix-command flakes' run github:nix-community/disko/latest -- --mode destroy,format,mount --flake .#<host>`
 3. Create `/mnt/etc/nixos/secrets/nas-smb` (mode 0600, root) with `username=ruggy` and `password=...`.

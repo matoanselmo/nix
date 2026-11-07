@@ -19,7 +19,7 @@
     pkgs.nodejs
   ];
 
-  my.disk.device = "/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E";
+  my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K178413";
 
   programs.git.config.user = {
     name = "ruggy@desktop";
