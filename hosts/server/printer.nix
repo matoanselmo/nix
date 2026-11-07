@@ -150,7 +150,7 @@ in
       octoprint_compat = { };
       history = { };
       timelapse = {
-        output_path = "/srv/timelapses/";
+        output_path = "/srv/share/timelapses/";
         frame_path = "/tmp/timelapse/";
         snapshoturl = "http://127.0.0.1:${toString webcamPort}/?action=snapshot";
         ffmpeg_binary_path = "${pkgs.ffmpeg}/bin/ffmpeg";
@@ -197,7 +197,8 @@ in
     "L+ ${data}/config/timelapse.cfg - - - - ${inputs.moonraker-timelapse}/klipper_macro/timelapse.cfg"
     "d ${data}/logs 0755 ruggy users - -"
     "d ${data}/comms 0755 ruggy users - -"
-    "d /srv/timelapses 0755 ruggy users - -"
+    # On the NAS partition, so renders don't fill the system.
+    "d /srv/share/timelapses 0755 ruggy users - -"
   ];
 
   # Replaces crowsnest (same camera settings as crowsnest.conf). The

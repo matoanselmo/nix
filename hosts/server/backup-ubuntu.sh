@@ -38,7 +38,7 @@ tar -C / -czpf "$out/stacks.tar.gz" \
   opt/stacks/pihole \
   opt/stacks/glance \
   home/ruggy/spoolman/data
-tar -C / -czpf "$out/srv.tar.gz" srv/share srv/timelapses
+tar -C / -czpf "$out/srv.tar.gz" srv/share srv/timelapses # timelapses go into /srv/share/timelapses on NixOS
 # Keeps the SSH host keys, so clients don't warn after the reinstall.
 tar -C / -czpf "$out/ssh-host-keys.tar.gz" etc/ssh/ssh_host_*
 cp /etc/netplan/*.yaml "$out/" # has the WiFi PSK; keep it private

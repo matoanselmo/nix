@@ -24,16 +24,33 @@
         "-L"
         "nas"
       ];
-      subvolumes."/@share" = {
-        mountpoint = "/srv/share";
-        mountOptions = [
-          "compress=zstd"
-          "noatime"
-        ];
+      subvolumes = {
+        "/@share" = {
+          mountpoint = "/srv/share";
+          mountOptions = [
+            "compress=zstd"
+            "noatime"
+          ];
+        };
+        # For snapper (below); nested, so it's left out of the snapshots.
+        "/@share/.snapshots" = { };
       };
     };
   };
   services.btrfs.autoScrub.fileSystems = [ "/srv/share" ];
+
+  # Undo for the NAS: browse old versions in /srv/share/.snapshots.
+  services.snapper.configs.share = {
+    SUBVOLUME = "/srv/share";
+    ALLOW_USERS = [ "ruggy" ];
+    TIMELINE_CREATE = true;
+    TIMELINE_CLEANUP = true;
+    TIMELINE_LIMIT_HOURLY = 6;
+    TIMELINE_LIMIT_DAILY = 7;
+    TIMELINE_LIMIT_WEEKLY = 4;
+    TIMELINE_LIMIT_MONTHLY = 6;
+    TIMELINE_LIMIT_YEARLY = 0;
+  };
 
   users.users.ruggy = {
     extraGroups = [
