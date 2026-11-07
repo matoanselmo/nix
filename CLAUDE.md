@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This repo (`matoanselmo/nix`) is the NixOS flake for both machines.
+This repo (`matoanselmo/nix`) is the NixOS flake for all three machines: two workstations (`desktop`, `laptop`) and a headless home server (`server`).
 
 Older history in this repo (before the rewrite) is a previous single-host Hyprland config.
 
@@ -10,16 +10,24 @@ Older history in this repo (before the rewrite) is a previous single-host Hyprla
 | --- | --- | --- |
 | `desktop` | Ryzen 5 5500, Radeon RX Vega 56/64 (amdgpu), Intel I225-V Ethernet, Intel 3168 Wi-Fi | NixOS drive: `/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E` (1 TB Crucial P3) |
 | `laptop` | Surface Pro 2017 (Pro 5), Intel Kaby Lake | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415`. Mainline kernel. Battery (5.12+) and performance modes (5.13+) work without linux-surface. Touch/pen and cameras don't, and that's accepted. Only switch to linux-surface if battery or power profiles stop working. |
+| `server` (hostname `matoserver`) | Intel Kaby Lake (HD 630), 16 GB, Realtek RTL8111 (`enp3s0`), TP-Link USB WiFi (`wlxa86e84a1ca08`) | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K178413` (256 GB). Headless: `core.nix` only, no desktop or Home Manager (`mkHost { workstation = false; }`). |
 
 **The desktop's Windows drive (Intel SSDPEKNU512GZ) must never be referenced:** not in disko, not in `fileSystems`, and not as a boot loader target. Windows is booted from the firmware boot menu. A `boot.loader.systemd-boot.windows` entry would only read that drive, but add one only if Ruggy asks.
 
 Services:
 
-- **Tailscale:** enabled on both hosts. Run `sudo tailscale up` once per machine.
-- **OpenSSH:** desktop only (`modules/nixos/ssh.nix`). Keys only, with no passwords and no root login. The authorized key is the laptop's `id_ed25519.pub`.
+- **Tailscale:** enabled on every host. Run `sudo tailscale up` once per machine.
+- **OpenSSH:** desktop and server (`modules/nixos/ssh.nix`). Keys only, with no passwords and no root login. The authorized key is the laptop's `id_ed25519.pub`; the server adds `mato@matopc` and `mateusanselmoguarino@gmail.com` (`hosts/server/default.nix`).
 - **Secure Boot:** desktop only, with lanzaboote (`modules/nixos/secure-boot.nix`). Surface firmware only offers "Microsoft only" or "Microsoft & 3rd Party CA" and can't enroll custom keys, which lanzaboote needs (checked in the Pro 5's UEFI). The laptop therefore uses plain systemd-boot, with Secure Boot set to "None" in its UEFI.
 
-NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts at `/mnt/nas` (`modules/nixos/nas.nix`).
+NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts at `/mnt/nas` (`modules/nixos/nas.nix`). The NAS is the server (`/srv/share`), so the server doesn't import `nas.nix`.
+
+Server (`hosts/server/`):
+
+- **Networking** (`networking.nix`): WiFi uplink at static `192.168.1.200` (gateway `192.168.1.254`, SSID `TELUS9825`); `enp3s0` is a private LAN at `192.168.100.1/24` with NAT and Kea DHCP (`.10`–`.100`); `can0` at 1 Mbit with txqueuelen 1024. systemd-networkd, no NetworkManager, no resolved (Pi-hole owns port 53). `wakepc` wakes the desktop.
+- **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker, Mainsail on port 1803 (keep it there; Ruggy chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`) and klipper-backup (`~/klipper-backup`, timer every 4 h). `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit.
+- **Services** (`services.nix`): Vaultwarden (127.0.0.1:7000, through `tailscale serve`), Spoolman (7912), Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100), Glances (61208), Beszel hub (4000) and agent.
+- **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
 
 ## Preferences
 
@@ -33,10 +41,12 @@ NAS: SMB at `192.168.100.1`, user `ruggy`. Its only share, `share`, automounts a
 ## Layout
 
 ```
-flake.nix                 inputs + mkHost; both hosts share modules/nixos and modules/home
+flake.nix                 inputs + mkHost; every host gets modules/nixos/core.nix, workstations also
+                          modules/nixos (default.nix) and modules/home
 hosts/<host>/default.nix  host-only imports, my.disk.device, my.browser, git user
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
-modules/nixos/            base, browser (my.browser), desktop (niri/greetd/thunar/fonts), disk (disko + snapper),
+hosts/server/             networking, printer (+ firmware/*.cfg), services, power, backup-ubuntu.sh
+modules/nixos/            core (every host: nix, boot, users, tailscale, disk), base (workstations), browser (my.browser), desktop (niri/greetd/thunar/fonts), disk (disko + snapper),
                           nas, amd-graphics, intel-graphics, laptop-power,
                           secure-boot (desktop), ssh (desktop)
 modules/home/             Home Manager for user ruggy: browser (Zen or Helium), niri, quickshell (Tessera),
@@ -55,7 +65,7 @@ Tessera notes:
 
 - **Never invent NixOS or Home Manager option names.** Look them up in the locked sources, e.g. grep `nixos/modules` in the nixpkgs store path or `modules/` in home-manager. Evaluation also fails on unknown options, so run the checks below.
 - **Never run `nixos-rebuild switch`/`boot`/`test`, `disko`, or anything with sudo.** Ruggy does that. Validation only builds.
-- **Secrets stay out of git.** The SMB password lives in `/etc/nixos/secrets/nas-smb` on each machine.
+- **Secrets stay out of git.** They're root-only files in `/etc/nixos/secrets/` on each machine: `nas-smb` (workstations), `wifi` (server, `psk_home=...`). The server's Samba password is set with `smbpasswd`, and klipper-backup's token lives in `~/klipper-backup/.env`.
 - Ask before assuming anything that can't be read from the repo or the running system (share names, disk IDs, hardware).
 - New files must be `git add`ed before flake commands can see them.
 
@@ -65,6 +75,7 @@ Tessera notes:
 nix flake check
 nixos-rebuild build --flake .#desktop
 nixos-rebuild build --flake .#laptop
+nixos-rebuild build --flake .#server
 ```
 
 `build` only produces `./result` in the store; it never activates anything.
@@ -88,3 +99,16 @@ Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To re
 2. In the firmware, clear the Secure Boot keys / enter **Setup Mode**, but don't erase the DBX if the board offers a separate option. Boot back into NixOS.
 3. Enroll your keys **with Microsoft's**: `sudo sbctl enroll-keys --microsoft`. Microsoft's keys are required because the Vega GPU's option ROM and Windows' bootloader are signed by Microsoft. Without them there's no display at boot and Windows won't start.
 4. Turn Secure Boot on in the firmware, boot, and check with `bootctl status` (it should say "Secure Boot: enabled (user)").
+
+## Server: migrating from Ubuntu (Ruggy runs these)
+
+1. On Ubuntu, export Pi-hole's settings (web UI: Settings > Teleporter), then run `sudo bash hosts/server/backup-ubuntu.sh <dir off the box>`.
+2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600, root) with `psk_home=<passphrase>`.
+3. Restore, then fix ownership:
+   - `home.tar.gz` and `srv.tar.gz` to `/`, owned by `ruggy:users`. Remove the old Kalico-only keys from `~/printer_data/config` (see below).
+   - `vw-data/*` to `/var/lib/vaultwarden` (owner `vaultwarden`), `tailscale-state/*` to `/var/lib/tailscale`, `beszel_data/*` to `/var/lib/beszel-hub`, and `spoolman/data/*` to `/var/lib/private/spoolman`. Stop each service before restoring and start it again afterwards.
+   - The SSH host keys to `/etc/ssh/`. Run `sudo smbpasswd -a ruggy`. Import the teleporter zip in Pi-hole's web UI.
+   - In Beszel, edit the matoserver system to `127.0.0.1`, port `45876`.
+4. **Kalico to Klipper:** stock Klipper rejects Kalico's `pid_version`, `pid_target` and `pid_tolerance` (in the `SAVE_CONFIG` block of `printer.cfg`) and `is_non_critical` (in `hardware/mcu.cfg`). Delete those lines.
+5. **Reflash the MCUs** with the matching firmware: `klipper-flash-btt_lis2dw` (USB), then `klipper-flash-ebb` and `klipper-flash-mcu` (CAN, through Katapult; flash the DP5 bridge last). The configs are in `hosts/server/firmware/`. `s2dw.cfg` is a generic RP2040 config, because Ubuntu didn't keep that board's.
+

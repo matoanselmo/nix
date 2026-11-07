@@ -1,0 +1,153 @@
+# What used to run as Docker Compose stacks under Dockge, now native NixOS
+# services on the same ports. Dropped: Dockge, AMP, Ollama/Open-WebUI,
+# OrcaSlicer, MongoDB, Nginx Proxy Manager (it had no proxy hosts; nginx
+# itself is in printer.nix). Tailscale comes from core.nix.
+#
+# Data to restore from the Ubuntu backup (see CLAUDE.md):
+#   Vaultwarden  /opt/stacks/bitwarden/vw-data  -> /var/lib/vaultwarden
+#   Spoolman     ~/spoolman/data                -> /var/lib/private/spoolman
+#   Beszel       /opt/stacks/beszel/beszel_data -> /var/lib/beszel-hub
+#   Pi-hole      teleporter export, through the web UI
+#   Tailscale    /opt/stacks/tailscale/tailscale-state -> /var/lib/tailscale
+{ lib, pkgs, ... }:
+{
+  # Reached through `tailscale serve` on the tailnet name below, as before.
+  services.vaultwarden = {
+    enable = true;
+    config = {
+      DOMAIN = "https://matoserver.tail23b98f.ts.net";
+      SIGNUPS_ALLOWED = true;
+      ROCKET_ADDRESS = "127.0.0.1";
+      ROCKET_PORT = 7000;
+    };
+  };
+
+  services.spoolman = {
+    enable = true;
+    listen = "0.0.0.0";
+    port = 7912;
+    openFirewall = true;
+  };
+
+  # DNS for the home network on 53, web UI on 2000.
+  services.pihole-ftl = {
+    enable = true;
+    openFirewallDNS = true;
+    openFirewallWebserver = true;
+    settings.dns = {
+      upstreams = [
+        "1.1.1.1"
+        "1.0.0.1"
+      ];
+      listeningMode = "ALL";
+    };
+  };
+  services.pihole-web = {
+    enable = true;
+    ports = [ "2000" ];
+  };
+
+  # Set the SMB password once with `sudo smbpasswd -a ruggy`.
+  services.samba = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      global = {
+        "server string" = "matoserver";
+        security = "user";
+        "map to guest" = "never";
+      };
+      share = {
+        path = "/srv/share";
+        "valid users" = "ruggy";
+        "guest ok" = "no";
+        "read only" = "no";
+        browseable = "yes";
+      };
+    };
+  };
+  systemd.tmpfiles.rules = [ "d /srv/share 0755 ruggy users - -" ];
+
+  # From /opt/stacks/glance/config/glance.yml, minus the Docker widget.
+  services.glance = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      server = {
+        host = "0.0.0.0";
+        port = 100;
+      };
+      pages = [
+        {
+          name = "Home";
+          hide-desktop-navigation = true;
+          columns = [
+            {
+              size = "small";
+              widgets = [
+                {
+                  type = "calendar";
+                  first-day-of-week = "monday";
+                }
+                {
+                  type = "weather";
+                  location = "Vancouver, Canada";
+                  units = "metric";
+                  hour-format = "12h";
+                  hide-location = true;
+                }
+              ];
+            }
+            {
+              size = "full";
+              widgets = [
+                {
+                  type = "server-stats";
+                  servers = [
+                    {
+                      type = "local";
+                      name = "matoserver";
+                      hide-mountpoints-by-default = true;
+                      mountpoints."/".hide = false;
+                    }
+                  ];
+                }
+              ];
+            }
+          ];
+        }
+      ];
+    };
+  };
+  # Port 100 is privileged. The module runs Glance in a user namespace,
+  # where the capability wouldn't apply to the host's ports.
+  systemd.services.glance.serviceConfig = {
+    AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+    CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+    PrivateUsers = lib.mkForce false;
+  };
+
+  # Web UI on 61208.
+  services.glances = {
+    enable = true;
+    openFirewall = true;
+  };
+
+  # The hub (web UI on 4000) and an agent for this machine. The agent now
+  # listens on TCP 45876 (firewalled) instead of the old shared socket: in
+  # the hub, edit the matoserver system to host 127.0.0.1, port 45876.
+  services.beszel.hub = {
+    enable = true;
+    host = "0.0.0.0";
+    port = 4000;
+    environment.APP_URL = "http://192.168.1.200:4000";
+  };
+  services.beszel.agent = {
+    enable = true;
+    environment = {
+      # The hub's public key (not a secret).
+      KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMyWtd4P98uwdFbar4n4ExdTR3YHUEMTGh2neBuxoSv";
+      LISTEN = "45876";
+    };
+  };
+}
