@@ -103,7 +103,7 @@ Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To re
 ## Server: migrating from Ubuntu (Ruggy runs these)
 
 1. On Ubuntu, export Pi-hole's settings (web UI: Settings > Teleporter), then run `sudo bash hosts/server/backup-ubuntu.sh <dir off the box>`.
-2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600, root) with `psk_home=<passphrase>`.
+2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600) with `psk_home=<passphrase>`. wpa_supplicant runs as its own user, so after the first boot run `sudo chown wpa_supplicant:wpa_supplicant /etc/nixos/secrets/wifi` and `sudo chmod 711 /etc/nixos/secrets`, then restart `wpa_supplicant-wlxa86e84a1ca08`.
 3. Restore, then fix ownership:
    - `home.tar.gz` and `srv.tar.gz` to `/`, owned by `ruggy:users`. Remove the old Kalico-only keys from `~/printer_data/config` (see below).
    - `tailscale-state/*` to `/var/lib/tailscale`, `beszel_data/*` to `/var/lib/beszel-hub`, and `spoolman/data/*` to `/var/lib/private/spoolman`. Stop each service before restoring and start it again afterwards.

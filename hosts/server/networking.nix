@@ -6,7 +6,8 @@
 # Plus can0 for the printer (FLY-DP5 USB-to-CAN bridge, gs_usb).
 #
 # The WiFi PSK is never in this repo. Create it by hand (see CLAUDE.md):
-#   /etc/nixos/secrets/wifi   (root:root, mode 0600)
+#   /etc/nixos/secrets/wifi   (wpa_supplicant:wpa_supplicant, mode 0600; the
+#                             secrets dir needs 711 so that user can reach it)
 #     psk_home=<passphrase>
 { pkgs, ... }:
 let
