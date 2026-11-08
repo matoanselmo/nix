@@ -162,7 +162,7 @@ in
   };
   security.polkit.enable = true;
 
-  # Mainsail on port 1803 only (Ruggy's choice; Mobileraker points at it).
+  # Mainsail on port 1803 only (Mato's choice; Mobileraker points at it).
   services.mainsail = {
     enable = true;
     hostName = "mainsail";

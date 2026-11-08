@@ -1,5 +1,5 @@
 {
-  description = "Ruggy's NixOS hosts: desktop, laptop and server";
+  description = "Mato's NixOS hosts: desktop, laptop and server";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

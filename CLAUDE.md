@@ -12,7 +12,7 @@ Older history in this repo (before the rewrite) is a previous single-host Hyprla
 | `laptop` | Surface Pro 2017 (Pro 5), Intel Kaby Lake | NixOS drive: `/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415`. Mainline kernel. Battery (5.12+) and performance modes (5.13+) work without linux-surface. Touch/pen and cameras don't, and that's accepted. Only switch to linux-surface if battery or power profiles stop working. 8 GB swapfile; boot menu hidden (`timeout = 0`, hold Space for rollbacks). |
 | `server` (hostname `matoserver`) | Intel Kaby Lake (HD 630), 16 GB, Realtek RTL8111 (`enp3s0`), TP-Link USB WiFi (`wlxa86e84a1ca08`) | NixOS drive: `/dev/disk/by-id/nvme-CT1000P3PSSD8_25044DDBD32E` (1 TB Crucial P3, formerly the desktop's). 128 GB btrfs system partition (`my.disk.rootSize`); the rest is a separate btrfs partition for the NAS, mounted at `/srv/share`, with its own snapper config (`share`). Timelapses are saved in `/srv/share/timelapses`. Headless: `core.nix` only, no desktop or Home Manager (`mkHost { workstation = false; }`). Both interface names are pinned to their MACs with systemd `.link` files, because they aren't stable otherwise. |
 
-**The desktop's Windows drive (Intel SSDPEKNU512GZ) must never be referenced:** not in disko, not in `fileSystems`, and not as a boot loader target. Windows is booted from the firmware boot menu. A `boot.loader.systemd-boot.windows` entry would only read that drive, but add one only if Ruggy asks.
+**The desktop's Windows drive (Intel SSDPEKNU512GZ) must never be referenced:** not in disko, not in `fileSystems`, and not as a boot loader target. Windows is booted from the firmware boot menu. A `boot.loader.systemd-boot.windows` entry would only read that drive, but add one only if Mato asks.
 
 Every host uses the latest kernel (`linuxPackages_latest`): workstations via `base.nix`, the server in `networking.nix` because the WiFi stick's `rtw89_8852au` driver needs it. Time zone `America/Vancouver`, `system.stateVersion = "26.11"` (never bump it).
 
@@ -27,9 +27,10 @@ NAS: SMB on `matoserver`, user `ruggy`. Its only share, `share`, automounts at `
 Server (`hosts/server/`):
 
 - **Networking** (`networking.nix`): WiFi uplink at static `192.168.1.200` (gateway `192.168.1.254`, SSID `TELUS9825`); the stick needs usb_modeswitch, and a udev rule starts wpa_supplicant when it appears. `enp3s0` is a private LAN at `192.168.100.1/24` with NAT and Kea DHCP (`.10`–`.100`). `can0` at 1 Mbit with txqueuelen 1024 (FLY-DP5 USB-to-CAN bridge, `gs_usb`). systemd-networkd, no NetworkManager, no resolved (Pi-hole owns port 53). The wired LAN and `tailscale0` are trusted firewall interfaces. `wakepc` wakes the desktop (Wake-on-LAN).
-- **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker (7125), Mainsail on port 1803 (keep it there; Ruggy chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`, joins Moonraker's private `/tmp`) and klipper-backup (`~/klipper-backup`, on boot, a filewatch, and a timer every 4 h). Everything runs as `ruggy` out of `~/printer_data`. `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit. MCU firmware configs are in `firmware/` and installed as `klipper-flash-{mcu,ebb,btt_lis2dw}`.
+- **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker (7125), Mainsail on port 1803 (keep it there; Mato chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`, joins Moonraker's private `/tmp`) and klipper-backup (`~/klipper-backup`, on boot, a filewatch, and a timer every 4 h). Everything runs as `ruggy` out of `~/printer_data`. `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit. MCU firmware configs are in `firmware/` and installed as `klipper-flash-{mcu,ebb,btt_lis2dw}`.
 - **Services** (`services.nix`): Spoolman (7912), Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), Beszel hub (4000) and agent (45876).
 - **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
+
 ## Preferences
 
 - **Compositor:** niri. The config is a verbatim KDL file at `modules/home/files/niri/config.kdl`; keep it KDL, because Tessera's keybinds overlay parses it.
@@ -76,9 +77,9 @@ Tessera notes:
 
 ## Rules
 
-- **Plan before implementing.** When Ruggy asks a question or is exploring options, answer and plan only. Don't edit files, stage anything or run builds until Ruggy explicitly asks for the change.
+- **Plan before implementing.** When Mato asks a question or is exploring options, answer and plan only. Don't edit files, stage anything or run builds until Mato explicitly asks for the change.
 - **Never invent NixOS or Home Manager option names.** Look them up in the locked sources, e.g. grep `nixos/modules` in the nixpkgs store path or `modules/` in home-manager. Evaluation also fails on unknown options, so run the checks below.
-- **Never run `nixos-rebuild switch`/`boot`/`test`, `disko`, or anything with sudo.** Ruggy does that (fish abbreviations `nrs`/`nrb`/`nrt`). Validation only builds.
+- **Never run `nixos-rebuild switch`/`boot`/`test`, `disko`, or anything with sudo.** Mato does that (fish abbreviations `nrs`/`nrb`/`nrt`). Validation only builds.
 - **Secrets stay out of git.** They're root-only files in `/etc/nixos/secrets/` on each machine: `nas-smb` (workstations), `wifi` (server, `psk_home=...`, owned by `wpa_supplicant`). The server's Samba password is set with `smbpasswd`, and klipper-backup's token lives in `~/klipper-backup/.env`.
 - Ask before assuming anything that can't be read from the repo or the running system (share names, disk IDs, hardware).
 - New files must be `git add`ed before flake commands can see them.
@@ -94,7 +95,7 @@ nixos-rebuild build --flake .#server
 
 `build` only produces `./result` in the store; it never activates anything. (`nrd` is the same for the current host.)
 
-## Reinstalling a host (Ruggy runs these from the NixOS installer)
+## Reinstalling a host (Mato runs these from the NixOS installer)
 
 1. Check the target drive: `ls -l /dev/disk/by-id/`. It must be the Samsung MZVLW256 (desktop), the CT1000P3 (server) or the Surface SSD (laptop).
 2. Partition and mount with disko (this **erases** `my.disk.device`):
@@ -114,7 +115,7 @@ Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To re
 3. Enroll your keys **with Microsoft's**: `sudo sbctl enroll-keys --microsoft`. Microsoft's keys are required because the Vega GPU's option ROM and Windows' bootloader are signed by Microsoft. Without them there's no display at boot and Windows won't start.
 4. Turn Secure Boot on in the firmware, boot, and check with `bootctl status` (it should say "Secure Boot: enabled (user)").
 
-## Server: migrating from Ubuntu (Ruggy runs these)
+## Server: migrating from Ubuntu (Mato runs these)
 
 1. On Ubuntu, export Pi-hole's settings (web UI: Settings > Teleporter), then run `sudo bash hosts/server/backup-ubuntu.sh <dir off the box>`.
 2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600) with `psk_home=<passphrase>`. wpa_supplicant runs as its own user, so after the first boot run `sudo chown wpa_supplicant:wpa_supplicant /etc/nixos/secrets/wifi` and `sudo chmod 711 /etc/nixos/secrets`, then restart `wpa_supplicant-wlxa86e84a1ca08`.
