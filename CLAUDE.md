@@ -37,7 +37,7 @@ Server (`hosts/server/`):
 - **Shell UI:** Tessera (`github:matoanselmo/tessera`, flake input `tessera`) on upstream Quickshell (`pkgs.quickshell`).
 - **Login:** greetd + tuigreet (`--time --remember --cmd niri-session`).
 - **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours in `modules/home/fish.nix`), Zed, and a browser picked per host by `my.browser` (`modules/nixos/browser.nix`): Zen Browser on the desktop (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`) and Helium on the laptop (from `github:oxcl/nix-flake-helium-browser`; binary `helium`). The host's browser is the default browser, and the `browser` command runs it, which is what niri's `Mod+E` spawns.
-- **Theme:** Adwaita-dark (GTK), qt6ct for Qt, Adwaita cursor at size 8.
+- **Theme:** Adwaita-dark (GTK), qt6ct for Qt (Fusion with the "darker" palette, `modules/home/qt.nix`), Adwaita cursor at size 8.
 - **Channel:** nixos-unstable. `allowUnfree = true`.
 - **Formatting:** nixfmt (`nix fmt`).
 
@@ -60,7 +60,7 @@ modules/nixos/            core (every host: nix, boot, users, tailscale, disk, t
                           intel-graphics, laptop-power, secure-boot (desktop), ssh (desktop, server),
                           embedded (desktop)
 modules/home/             Home Manager for user ruggy: browser (Zen or Helium), niri, quickshell (Tessera),
-                          foot, fish, gtk; files/ holds the niri config and Tessera's wallpaper and seed settings
+                          foot, fish, gtk, zed, qt; files/ holds the niri config and Tessera's wallpaper and seed settings
 ```
 
 Disk layout (`modules/nixos/disk.nix`): a 1 GB ESP and a btrfs partition with `@`, `@home`, `@nix`, `@log` and `@swap` (zstd, noatime). Snapper keeps timelines of `/home` and `/`, and btrfs is scrubbed monthly.

@@ -8,6 +8,7 @@
     ./fish.nix
     ./gtk.nix
     ./zed.nix
+    ./qt.nix
   ];
 
   home.username = "ruggy";
