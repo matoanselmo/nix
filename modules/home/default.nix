@@ -9,6 +9,7 @@
     ./gtk.nix
     ./zed.nix
     ./qt.nix
+    ./thunar.nix
   ];
 
   home.username = "ruggy";
