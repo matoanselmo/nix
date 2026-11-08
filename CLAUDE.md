@@ -53,7 +53,7 @@ flake.nix                 inputs + mkHost; every host gets modules/nixos/core.ni
                           modules/nixos (default.nix) and modules/home
 hosts/<host>/default.nix  host-only imports and packages, my.disk.*, my.browser (server: git user)
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
-hosts/server/             networking, printer (+ firmware/*.cfg), services, power, backup-ubuntu.sh
+hosts/server/             networking, printer (+ firmware/*.cfg), services, power
 modules/nixos/            core (every host: nix, boot, users, tailscale, disk, the gcc-arm-embedded overlay),
                           base (workstations), browser (my.browser), desktop (niri/greetd/thunar/fonts),
                           disk (disko + snapper: my.disk.device/rootSize/swapSize), nas, amd-graphics,
@@ -100,7 +100,7 @@ nixos-rebuild build --flake .#server
 1. Check the target drive: `ls -l /dev/disk/by-id/`. It must be the Samsung MZVLW256 (desktop), the CT1000P3 (server) or the Surface SSD (laptop).
 2. Partition and mount with disko (this **erases** `my.disk.device`):
    `sudo nix --experimental-features 'nix-command flakes' run github:nix-community/disko/latest -- --mode destroy,format,mount --flake .#<host>`
-3. On workstations, create `/mnt/etc/nixos/secrets/nas-smb` (mode 0600, root) with `username=ruggy` and `password=...`.
+3. On workstations, create `/mnt/etc/nixos/secrets/nas-smb` (mode 0600, root) with `username=ruggy` and `password=...`. On the server, create `/mnt/etc/nixos/secrets/wifi` (mode 0600) with `psk_home=<passphrase>`; after the first boot, `sudo chown wpa_supplicant:wpa_supplicant /etc/nixos/secrets/wifi`, `sudo chmod 711 /etc/nixos/secrets` and restart `wpa_supplicant-wlxa86e84a1ca08`, because wpa_supplicant runs as its own user.
 4. `sudo nixos-install --flake github:matoanselmo/nix#<host>`, then set the user password with `nixos-enter --root /mnt -c 'passwd ruggy'`.
    - On the desktop, lanzaboote generates new Secure Boot keys into `/var/lib/sbctl`. Turn Secure Boot **off** in the firmware until they're enrolled (below).
    - On the laptop, Secure Boot must be "None" in the Surface UEFI.
@@ -115,14 +115,6 @@ Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To re
 3. Enroll your keys **with Microsoft's**: `sudo sbctl enroll-keys --microsoft`. Microsoft's keys are required because the Vega GPU's option ROM and Windows' bootloader are signed by Microsoft. Without them there's no display at boot and Windows won't start.
 4. Turn Secure Boot on in the firmware, boot, and check with `bootctl status` (it should say "Secure Boot: enabled (user)").
 
-## Server: migrating from Ubuntu (Mato runs these)
+## Server: flashing the MCUs (Mato runs these)
 
-1. On Ubuntu, export Pi-hole's settings (web UI: Settings > Teleporter), then run `sudo bash hosts/server/backup-ubuntu.sh <dir off the box>`.
-2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600) with `psk_home=<passphrase>`. wpa_supplicant runs as its own user, so after the first boot run `sudo chown wpa_supplicant:wpa_supplicant /etc/nixos/secrets/wifi` and `sudo chmod 711 /etc/nixos/secrets`, then restart `wpa_supplicant-wlxa86e84a1ca08`.
-3. Restore, then fix ownership:
-   - `home.tar.gz` and `srv.tar.gz` to `/`, owned by `ruggy:users`. Remove the old Kalico-only keys from `~/printer_data/config` (see below).
-   - From `stacks.tar.gz`: `tailscale-state/*` to `/var/lib/tailscale` and `beszel_data/*` to `/var/lib/beszel-hub`. Stop each service before restoring and start it again afterwards.
-   - The SSH host keys to `/etc/ssh/`. Run `sudo smbpasswd -a ruggy`. Import the teleporter zip in Pi-hole's web UI.
-   - In Beszel, edit the matoserver system to `127.0.0.1`, port `45876`.
-4. **Kalico to Klipper:** stock Klipper rejects Kalico's `pid_version`, `pid_target` and `pid_tolerance` (in the `SAVE_CONFIG` block of `printer.cfg`) and `is_non_critical` (in `hardware/mcu.cfg`). Delete those lines.
-5. **Reflash the MCUs** with the matching firmware: `klipper-flash-btt_lis2dw` (USB), then `klipper-flash-ebb` and `klipper-flash-mcu` (CAN, through Katapult; flash the DP5 bridge last). The configs are in `hosts/server/firmware/`. `s2dw.cfg` is a generic RP2040 config, because Ubuntu didn't keep that board's.
+The MCUs must run firmware built from the same Klipper as the host, so reflash after Klipper changes: `klipper-flash-btt_lis2dw` (USB), then `klipper-flash-ebb` and `klipper-flash-mcu` (CAN, through Katapult; flash the DP5 bridge last). The configs are in `hosts/server/firmware/`. `s2dw.cfg` is a generic RP2040 config.

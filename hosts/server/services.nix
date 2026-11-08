@@ -2,11 +2,6 @@
 # services on the same ports. Dropped: Dockge, AMP, Ollama/Open-WebUI, Vaultwarden,
 # OrcaSlicer, MongoDB, Nginx Proxy Manager (it had no proxy hosts; nginx
 # itself is in printer.nix), Spoolman. Tailscale comes from core.nix.
-#
-# Data from the Ubuntu install, if kept (see CLAUDE.md):
-#   Beszel       /opt/stacks/beszel/beszel_data -> /var/lib/beszel-hub
-#   Pi-hole      teleporter export, through the web UI
-#   Tailscale    /opt/stacks/tailscale/tailscale-state -> /var/lib/tailscale
 { lib, pkgs, ... }:
 {
   # DNS for the home network on 53, web UI on 2000.

@@ -4,8 +4,8 @@
 #
 # ~/printer_data/config stays mutable (SAVE_CONFIG and klipper-backup write
 # to it), so printer.cfg, the macros and hardware/*.cfg are not in this repo.
-# Restore them from the backup (see CLAUDE.md). moonraker.conf there is no
-# longer read: Moonraker's settings are below.
+# Restore them from the klipper-backup repo. Moonraker's settings are below,
+# not in a moonraker.conf.
 #
 # MCUs must run firmware built from this Klipper. The flash commands are
 # installed as klipper-flash-<mcu> (see CLAUDE.md).
