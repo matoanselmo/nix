@@ -144,6 +144,9 @@ in
           "*://localhost:*"
           "*://my.mainsail.xyz"
           "*://app.fluidd.xyz"
+          # Mainsail over Tailscale (MagicDNS short name and FQDN)
+          "*://matoserver:*"
+          "*://matoserver.tail23b98f.ts.net:*"
         ];
       };
       octoprint_compat = { };
