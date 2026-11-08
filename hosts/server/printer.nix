@@ -157,9 +157,7 @@ in
         snapshoturl = "http://127.0.0.1:${toString webcamPort}/?action=snapshot";
         ffmpeg_binary_path = "${pkgs.ffmpeg}/bin/ffmpeg";
       };
-      spoolman.server = "http://192.168.1.200:7912";
       file_manager.enable_object_processing = true;
-      simplyprint = { };
     };
   };
   security.polkit.enable = true;

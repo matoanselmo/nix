@@ -28,7 +28,7 @@ Server (`hosts/server/`):
 
 - **Networking** (`networking.nix`): WiFi uplink at static `192.168.1.200` (gateway `192.168.1.254`, SSID `TELUS9825`); the stick needs usb_modeswitch, and a udev rule starts wpa_supplicant when it appears. `enp3s0` is a private LAN at `192.168.100.1/24` with NAT and Kea DHCP (`.10`–`.100`). `can0` at 1 Mbit with txqueuelen 1024 (FLY-DP5 USB-to-CAN bridge, `gs_usb`). systemd-networkd, no NetworkManager, no resolved (Pi-hole owns port 53). The wired LAN and `tailscale0` are trusted firewall interfaces. `wakepc` wakes the desktop (Wake-on-LAN).
 - **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker (7125), Mainsail on port 1803 (keep it there; Mato chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`, joins Moonraker's private `/tmp`) and klipper-backup (`~/klipper-backup`, on boot, a filewatch, and a timer every 4 h). Everything runs as `ruggy` out of `~/printer_data`. `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit. MCU firmware configs are in `firmware/` and installed as `klipper-flash-{mcu,ebb,btt_lis2dw}`.
-- **Services** (`services.nix`): Spoolman (7912), Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), Beszel hub (4000) and agent (45876).
+- **Services** (`services.nix`): Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), Beszel hub (4000) and agent (45876).
 - **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
 
 ## Preferences
@@ -121,7 +121,7 @@ Enabled, with the keys in `/var/lib/sbctl` enrolled alongside Microsoft's. To re
 2. Reinstall it like any other host (above) with `#server`. Create `/mnt/etc/nixos/secrets/wifi` (mode 0600) with `psk_home=<passphrase>`. wpa_supplicant runs as its own user, so after the first boot run `sudo chown wpa_supplicant:wpa_supplicant /etc/nixos/secrets/wifi` and `sudo chmod 711 /etc/nixos/secrets`, then restart `wpa_supplicant-wlxa86e84a1ca08`.
 3. Restore, then fix ownership:
    - `home.tar.gz` and `srv.tar.gz` to `/`, owned by `ruggy:users`. Remove the old Kalico-only keys from `~/printer_data/config` (see below).
-   - From `stacks.tar.gz`: `tailscale-state/*` to `/var/lib/tailscale`, `beszel_data/*` to `/var/lib/beszel-hub`, and `spoolman/data/*` to `/var/lib/private/spoolman`. Stop each service before restoring and start it again afterwards.
+   - From `stacks.tar.gz`: `tailscale-state/*` to `/var/lib/tailscale` and `beszel_data/*` to `/var/lib/beszel-hub`. Stop each service before restoring and start it again afterwards.
    - The SSH host keys to `/etc/ssh/`. Run `sudo smbpasswd -a ruggy`. Import the teleporter zip in Pi-hole's web UI.
    - In Beszel, edit the matoserver system to `127.0.0.1`, port `45876`.
 4. **Kalico to Klipper:** stock Klipper rejects Kalico's `pid_version`, `pid_target` and `pid_tolerance` (in the `SAVE_CONFIG` block of `printer.cfg`) and `is_non_critical` (in `hardware/mcu.cfg`). Delete those lines.
