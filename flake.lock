@@ -299,11 +299,11 @@
     "tessera": {
       "flake": false,
       "locked": {
-        "lastModified": 1792969010,
-        "narHash": "sha256-zwqR4dZ0zYvh8KIcqK7lMM9ukLEqqNvPQsfteUQqZ8k=",
+        "lastModified": 1793046247,
+        "narHash": "sha256-oNgpO5NPQeyy5/gAWZohaPz5glmPZw+Tt+ii4Y9nd7c=",
         "owner": "matoanselmo",
         "repo": "tessera",
-        "rev": "661192790c2fcee8b2bcb7904d5d162ca859ff3e",
+        "rev": "3657b1cad9076624cd21fbab0efc2b5b965703c2",
         "type": "github"
       },
       "original": {

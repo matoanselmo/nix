@@ -1,11 +1,17 @@
 # Laptop: Surface Pro 2017 (Pro 5, Intel Kaby Lake), on the mainline kernel.
 # Touch/pen (IPTS) and the cameras need linux-surface and are left out on
 # purpose; battery and power profiles work without it.
+#
+{ pkgs, ... }:
 {
   imports = [
     ./hardware.nix
     ../../modules/nixos/intel-graphics.nix
     ../../modules/nixos/laptop-power.nix
+  ];
+
+  environment.systemPackages = [
+      pkgs.openjdk25
   ];
 
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415";
@@ -20,5 +26,10 @@
   programs.git.config.user = {
     name = "ruggy@laptop";
     email = "mateusanselmoguarino@gmail.com";
+  };
+
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [ alsa-lib udev ];
   };
 }

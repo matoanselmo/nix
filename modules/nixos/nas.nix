@@ -8,7 +8,7 @@
 #     password=...
 { lib, pkgs, ... }:
 let
-  server = "192.168.100.1";
+  server = "matoserver";
   credentials = "/etc/nixos/secrets/nas-smb";
 
   # share name on the NAS -> mount point
