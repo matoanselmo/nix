@@ -8,6 +8,7 @@
     ./printer.nix
     ./services.nix
     ./power.nix
+    ./minecraft.nix
     ../../modules/nixos/intel-graphics.nix
     ../../modules/nixos/ssh.nix
   ];

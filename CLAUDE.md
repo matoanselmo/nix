@@ -29,6 +29,7 @@ Server (`hosts/server/`):
 - **Networking** (`networking.nix`): WiFi uplink at static `192.168.1.200` (gateway `192.168.1.254`, SSID `TELUS9825`); the stick needs usb_modeswitch, and a udev rule starts wpa_supplicant when it appears. `enp3s0` is a private LAN at `192.168.100.1/24` with NAT and Kea DHCP (`.10`–`.100`). `can0` at 1 Mbit with txqueuelen 1024 (FLY-DP5 USB-to-CAN bridge, `gs_usb`). systemd-networkd, no NetworkManager, no resolved (Pi-hole owns port 53). The wired LAN and `tailscale0` are trusted firewall interfaces. `wakepc` wakes the desktop (Wake-on-LAN).
 - **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker (7125), Mainsail on port 1803 (keep it there; Mato chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`, joins Moonraker's private `/tmp`) and klipper-backup (`~/klipper-backup`, on boot, a filewatch, and a timer every 4 h). Everything runs as `ruggy` out of `~/printer_data`. `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit. MCU firmware configs are in `firmware/` and installed as `klipper-flash-{mcu,ebb,btt_lis2dw}`.
 - **Services** (`services.nix`): Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), Beszel hub (4000) and agent (45876).
+- **Minecraft** (`minecraft.nix`): Better Than Adventure (beta 1.7.3) as `minecraft-bta`, on 25565 over Tailscale/LAN only. Files and the hand-placed `server.jar` live in `/srv/share/minecraft/bta`; console with `mc <command>`.
 - **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
 
 ## Preferences
@@ -53,7 +54,7 @@ flake.nix                 inputs + mkHost; every host gets modules/nixos/core.ni
                           modules/nixos (default.nix) and modules/home
 hosts/<host>/default.nix  host-only imports and packages, my.disk.*, my.browser (server: git user)
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
-hosts/server/             networking, printer (+ firmware/*.cfg), services, power
+hosts/server/             networking, printer (+ firmware/*.cfg), services, power, minecraft
 modules/nixos/            core (every host: nix, boot, users, tailscale, disk, the gcc-arm-embedded overlay),
                           base (workstations), browser (my.browser), desktop (niri/greetd/thunar/fonts),
                           disk (disko + snapper: my.disk.device/rootSize/swapSize), nas, amd-graphics,
