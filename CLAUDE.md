@@ -51,7 +51,7 @@ Per-host extras:
 ```
 flake.nix                 inputs + mkHost; every host gets modules/nixos/core.nix, workstations also
                           modules/nixos (default.nix) and modules/home
-hosts/<host>/default.nix  host-only imports and packages, my.disk.*, my.browser, git user
+hosts/<host>/default.nix  host-only imports and packages, my.disk.*, my.browser (server: git user)
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
 hosts/server/             networking, printer (+ firmware/*.cfg), services, power, backup-ubuntu.sh
 modules/nixos/            core (every host: nix, boot, users, tailscale, disk, the gcc-arm-embedded overlay),
@@ -60,7 +60,7 @@ modules/nixos/            core (every host: nix, boot, users, tailscale, disk, t
                           intel-graphics, laptop-power, secure-boot (desktop), ssh (desktop, server),
                           embedded (desktop)
 modules/home/             Home Manager for user ruggy: browser (Zen or Helium), niri, quickshell (Tessera),
-                          foot, fish, gtk, zed, qt; files/ holds the niri config and Tessera's wallpaper and seed settings
+                          foot, fish, gtk, zed, qt, git user (ruggy@<hostname>); files/ holds the niri config and Tessera's wallpaper and seed settings
 ```
 
 Disk layout (`modules/nixos/disk.nix`): a 1 GB ESP and a btrfs partition with `@`, `@home`, `@nix`, `@log` and `@swap` (zstd, noatime). Snapper keeps timelines of `/home` and `/`, and btrfs is scrubbed monthly.

@@ -11,7 +11,7 @@
   ];
 
   environment.systemPackages = [
-      pkgs.openjdk25
+    pkgs.openjdk25
   ];
 
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415";
@@ -23,13 +23,11 @@
   # Skip the boot menu. Hold Space while booting to get it back (rollbacks).
   boot.loader.timeout = 0;
 
-  programs.git.config.user = {
-    name = "ruggy@laptop";
-    email = "mateusanselmoguarino@gmail.com";
-  };
-
   programs.nix-ld = {
     enable = true;
-    libraries = with pkgs; [ alsa-lib udev ];
+    libraries = with pkgs; [
+      alsa-lib
+      udev
+    ];
   };
 }

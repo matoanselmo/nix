@@ -20,9 +20,4 @@
   ];
 
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K178413";
-
-  programs.git.config.user = {
-    name = "ruggy@desktop";
-    email = "mateusanselmoguarino@gmail.com";
-  };
 }

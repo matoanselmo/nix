@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, osConfig, ... }:
 {
   imports = [
     ./browser.nix
@@ -44,7 +44,13 @@
   services.cliphist.enable = true;
   services.polkit-gnome.enable = true;
 
-  programs.git.enable = true;
+  programs.git = {
+    enable = true;
+    settings.user = {
+      name = "ruggy@${osConfig.networking.hostName}";
+      email = "mateusanselmoguarino@gmail.com";
+    };
+  };
 
   programs.zoxide = {
     enable = true;
