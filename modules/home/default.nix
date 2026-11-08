@@ -7,6 +7,7 @@
     ./foot.nix
     ./fish.nix
     ./gtk.nix
+    ./zed.nix
   ];
 
   home.username = "ruggy";
@@ -24,7 +25,6 @@
     pavucontrol
     bluetui
     qt6Packages.qt6ct
-    zed-editor
 
     # Apps and CLI
     fastfetch

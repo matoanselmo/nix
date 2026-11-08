@@ -34,7 +34,10 @@
 
   fonts.packages = with pkgs; [
     adwaita-fonts
+    geist-font
     jetbrains-mono
+    maple-mono.truetype
+    monaspace
     noto-fonts
     noto-fonts-color-emoji
   ];

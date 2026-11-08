@@ -10,7 +10,6 @@
 # MCUs must run firmware built from this Klipper. The flash commands are
 # installed as klipper-flash-<mcu> (see CLAUDE.md).
 {
-  config,
   lib,
   pkgs,
   inputs,
