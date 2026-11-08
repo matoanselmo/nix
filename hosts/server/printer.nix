@@ -53,6 +53,8 @@ let
   backupService = extra: {
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
+    # Skip quietly until ~/klipper-backup has been set up.
+    unitConfig.ConditionPathExists = "${home}/klipper-backup/.env";
     path = with pkgs; [
       bash
       coreutils
