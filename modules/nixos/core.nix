@@ -2,7 +2,10 @@
 # pieces (audio, Bluetooth, NetworkManager, the desktop) are in default.nix.
 { pkgs, ... }:
 {
-  imports = [ ./disk.nix ];
+  imports = [
+    ./disk.nix
+    ./fish.nix
+  ];
 
   nix.settings = {
     experimental-features = [
@@ -72,7 +75,6 @@
   services.fstrim.enable = true;
   zramSwap.enable = true;
 
-  programs.fish.enable = true;
   programs.git.enable = true;
   users.users.ruggy = {
     isNormalUser = true;

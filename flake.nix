@@ -91,7 +91,10 @@
         }:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            inherit inputs;
+            flakeHost = dir; # differs from the hostname on the server
+          };
           modules = [
             disko.nixosModules.disko
             ./modules/nixos/core.nix

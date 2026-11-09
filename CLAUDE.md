@@ -37,7 +37,7 @@ Server (`hosts/server/`):
 - **Compositor:** niri. The config is a verbatim KDL file at `modules/home/files/niri/config.kdl`; keep it KDL, because Tessera's keybinds overlay parses it.
 - **Shell UI:** Tessera (`github:matoanselmo/tessera`, flake input `tessera`) on upstream Quickshell (`pkgs.quickshell`).
 - **Login:** greetd + tuigreet (`--time --remember --cmd niri-session`).
-- **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours in `modules/home/fish.nix`), Zed, and a browser picked per host by `my.browser` (`modules/nixos/browser.nix`): Zen Browser on the desktop (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`) and Helium on the laptop (from `github:oxcl/nix-flake-helium-browser`; binary `helium`). The host's browser is the default browser, and the `browser` command runs it, which is what niri's `Mod+E` spawns.
+- **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours and abbreviations in `modules/nixos/fish.nix`, on every host), Zed, and a browser picked per host by `my.browser` (`modules/nixos/browser.nix`): Zen Browser on the desktop (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`) and Helium on the laptop (from `github:oxcl/nix-flake-helium-browser`; binary `helium`). The host's browser is the default browser, and the `browser` command runs it, which is what niri's `Mod+E` spawns.
 - **Theme:** Adwaita-dark (GTK), qt6ct for Qt (Fusion with the "darker" palette, `modules/home/qt.nix`), Adwaita cursor at size 8.
 - **Channel:** nixos-unstable. `allowUnfree = true`.
 - **Formatting:** nixfmt (`nix fmt`).
@@ -55,7 +55,7 @@ flake.nix                 inputs + mkHost; every host gets modules/nixos/core.ni
 hosts/<host>/default.nix  host-only imports and packages, my.disk.*, my.browser (server: git user)
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
 hosts/server/             networking, printer (+ firmware/*.cfg), services, power, minecraft
-modules/nixos/            core (every host: nix, boot, users, tailscale, disk, the gcc-arm-embedded overlay),
+modules/nixos/            core (every host: nix, boot, users, tailscale, disk, fish, the gcc-arm-embedded overlay),
                           base (workstations), browser (my.browser), desktop (niri/greetd/thunar/fonts),
                           disk (disko + snapper: my.disk.device/rootSize/swapSize), nas, amd-graphics,
                           intel-graphics, laptop-power, secure-boot (desktop), ssh (desktop, server),
