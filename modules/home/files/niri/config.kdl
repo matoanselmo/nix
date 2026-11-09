@@ -81,7 +81,7 @@ screenshot-path "~/pictures/screenshots/%Y-%m-%d %H-%M-%S.png"
 
 environment {
     // Force GTK & QT backends to recognize dark preferences
-    GTK_THEME "Adwaita-dark"
+    GTK_THEME "Adwaita:dark"
     QT_QPA_PLATFORMTHEME "qt6ct"
 
     // Ensure Wayland rendering is preferred over XWayland

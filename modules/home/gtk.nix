@@ -2,7 +2,7 @@
 {
   gtk = {
     enable = true;
-    theme.name = "Adwaita-dark";
+    theme.name = "Adwaita";
     colorScheme = "dark";
   };
 
