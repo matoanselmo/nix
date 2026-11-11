@@ -61,7 +61,9 @@ modules/nixos/            core (every host: nix, boot, users, tailscale, disk, f
                           intel-graphics, laptop-power, secure-boot (desktop), ssh (desktop, server),
                           embedded (desktop)
 modules/home/             Home Manager for user ruggy: browser (Zen or Helium), niri, quickshell (Tessera),
-                          foot, fish, gtk, zed, qt, thunar (custom actions), git user (ruggy@<hostname>); files/ holds the niri config and Tessera's wallpaper and seed settings
+                          foot, fish, gtk, zed, qt, thunar (custom actions), orca (Orca Slicer with the Mimi3D vendor
+                          profile from files/orca), git user (ruggy@<hostname>); files/ holds the niri config, Tessera's
+                          wallpaper and seed settings, and the Orca vendor
 ```
 
 Disk layout (`modules/nixos/disk.nix`): a 1 GB ESP and a btrfs partition with `@`, `@home`, `@nix`, `@log` and `@swap` (zstd, noatime). Snapper keeps timelines of `/home` and `/`, and btrfs is scrubbed monthly.

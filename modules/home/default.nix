@@ -10,6 +10,7 @@
     ./zed.nix
     ./qt.nix
     ./thunar.nix
+    ./orca.nix
   ];
 
   home.username = "ruggy";
@@ -31,7 +32,6 @@
     # Apps and CLI
     fastfetch
     rustup
-    orca-slicer
     nixd
     claude-code
 

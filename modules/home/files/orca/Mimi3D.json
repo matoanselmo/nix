@@ -1,0 +1,29 @@
+{
+    "name": "Mimi3D",
+    "version": "02.03.00.02",
+    "force_update": "0",
+    "description": "Mimi3D cartesian bed slinger (Klipper)",
+    "machine_model_list": [
+        {
+            "name": "Mimi3D",
+            "sub_path": "machine/Mimi3D.json"
+        }
+    ],
+    "process_list": [
+        {
+            "name": "0.20mm PLA @Mimi3D",
+            "sub_path": "process/0.20mm PLA @Mimi3D.json"
+        },
+        {
+            "name": "0.20mm PETG @Mimi3D",
+            "sub_path": "process/0.20mm PETG @Mimi3D.json"
+        }
+    ],
+    "filament_list": [],
+    "machine_list": [
+        {
+            "name": "Mimi3D 0.4 nozzle",
+            "sub_path": "machine/Mimi3D 0.4 nozzle.json"
+        }
+    ]
+}
