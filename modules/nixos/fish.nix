@@ -1,16 +1,23 @@
-{ flakeHost, ... }:
+{ lib, flakeHost, ... }:
 let
-  flake = "~/System#${flakeHost}";
+  # nh reads the flake's path from NH_FLAKE (shell.nix). The host is named
+  # because the server's hostname differs from its flake attribute.
+  nh = cmd: "nh os ${cmd} --hostname ${flakeHost}";
 in
 {
   programs.fish = {
     enable = true;
     shellAbbrs = {
-      nrs = "sudo nixos-rebuild switch --flake ${flake}";
-      nrb = "sudo nixos-rebuild boot --flake ${flake}";
-      nrt = "sudo nixos-rebuild test --flake ${flake}";
-      nrd = "nixos-rebuild build --flake ${flake}";
+      nrs = nh "switch";
+      nrb = nh "boot";
+      nrt = nh "test";
+      nrd = "${nh "build"} --out-link result";
       nfu = "nix flake update --flake ~/System";
+    }
+    # Same as nrs, but the desktop does the compiling (it must be on; see
+    # wakepc). Needs this machine's SSH key authorized on the desktop.
+    // lib.optionalAttrs (flakeHost != "desktop") {
+      nrsr = "${nh "switch"} --build-host desktop";
     };
     interactiveShellInit = ''
       set fish_greeting ""

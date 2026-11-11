@@ -23,7 +23,6 @@
     wl-clipboard
     xwayland-satellite
     xdg-utils
-    ripgrep
     wtype # Tessera's clipboard copy & paste
     pavucontrol
     bluetui
@@ -38,7 +37,6 @@
     # Other random stuff
     discord
     prismlauncher
-    btop
     peazip
   ];
 
@@ -51,14 +49,6 @@
       name = "ruggy@${osConfig.networking.hostName}";
       email = "mateusanselmoguarino@gmail.com";
     };
-  };
-
-  programs.zoxide = {
-    enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
-
-    options = [ "--cmd cd" ];
   };
 
   home.stateVersion = "26.11";

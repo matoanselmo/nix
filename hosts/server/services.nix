@@ -125,4 +125,14 @@
       LISTEN = "45876";
     };
   };
+
+  # Shell history sync for programs.atuin (modules/nixos/shell.nix), on 8888
+  # with its own PostgreSQL database. The port isn't opened on the WiFi side,
+  # so only the tailnet and the wired LAN reach it. Registration can be turned
+  # off once the account exists.
+  services.atuin = {
+    enable = true;
+    host = "0.0.0.0";
+    openRegistration = true;
+  };
 }

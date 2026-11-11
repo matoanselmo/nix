@@ -8,7 +8,7 @@
   home.packages = [
     (pkgs.orca-slicer.overrideAttrs (old: {
       postInstall = (old.postInstall or "") + ''
-        cp -r ${./files/orca}/. $out/resources/profiles/
+        cp -r ${./files/orca}/. $out/share/OrcaSlicer/profiles/
       '';
     }))
   ];

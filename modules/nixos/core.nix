@@ -5,6 +5,7 @@
   imports = [
     ./disk.nix
     ./fish.nix
+    ./shell.nix
   ];
 
   nix.settings = {
@@ -13,6 +14,12 @@
       "flakes"
     ];
     auto-optimise-store = true;
+    # Lets ruggy copy in what another host built (`nrsr`, fish.nix); those
+    # store paths aren't signed.
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
   };
   nix.gc = {
     automatic = true;

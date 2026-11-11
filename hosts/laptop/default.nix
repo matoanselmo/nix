@@ -12,6 +12,9 @@
 
   environment.systemPackages = [
     pkgs.openjdk25
+    (pkgs.writeShellScriptBin "wakepc" ''
+      exec ssh matoserver wakepc
+    '')
   ];
 
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_KUS030202M-B000_S33JNY0K413415";

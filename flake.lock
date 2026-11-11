@@ -283,11 +283,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792963895,
-        "narHash": "sha256-43VnFxSdmE4nJp3g9p+gxBlkHS64piO7Sf99RpszMag=",
+        "lastModified": 1794427021,
+        "narHash": "sha256-+uH/fRY3GiCqfhgEPew4JDAol8ahQVSqDWldmO80RC8=",
         "owner": "tangency-labs",
         "repo": "solidcraft",
-        "rev": "62d55c3b29f488ef084234080493b6fdf1bb93d4",
+        "rev": "f6d044089c30873326c4933671f3fdd40ddeae2b",
         "type": "github"
       },
       "original": {

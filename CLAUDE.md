@@ -18,6 +18,7 @@ Every host uses the latest kernel (`linuxPackages_latest`): workstations via `ba
 
 Services:
 
+- **Wake-on-LAN:** the desktop's Ethernet (`enp7s0`) is kept armed for magic packets through NetworkManager (`hosts/desktop/default.nix`). `wakepc` on the server sends one; on the laptop, `wakepc` runs the server's over SSH.
 - **Tailscale:** enabled on every host. Run `sudo tailscale up` once per machine.
 - **OpenSSH:** desktop and server (`modules/nixos/ssh.nix`). Keys only, with no passwords and no root login. The authorized key is the laptop's `id_ed25519.pub`; the server adds `mateusanselmoguarino@gmail.com`, `mato@matopc` and `ruggy@desktop` (`hosts/server/default.nix`). The server also runs fail2ban.
 - **Secure Boot:** desktop only, with lanzaboote (`modules/nixos/secure-boot.nix`). Surface firmware only offers "Microsoft only" or "Microsoft & 3rd Party CA" and can't enroll custom keys, which lanzaboote needs (checked in the Pro 5's UEFI). The laptop therefore uses plain systemd-boot, with Secure Boot set to "None" in its UEFI.
@@ -28,7 +29,7 @@ Server (`hosts/server/`):
 
 - **Networking** (`networking.nix`): WiFi uplink at static `192.168.1.200` (gateway `192.168.1.254`, SSID `TELUS9825`); the stick needs usb_modeswitch, and a udev rule starts wpa_supplicant when it appears. `enp3s0` is a private LAN at `192.168.100.1/24` with NAT and Kea DHCP (`.10`–`.100`). `can0` at 1 Mbit with txqueuelen 1024 (FLY-DP5 USB-to-CAN bridge, `gs_usb`). systemd-networkd, no NetworkManager, no resolved (Pi-hole owns port 53). The wired LAN and `tailscale0` are trusted firewall interfaces. `wakepc` wakes the desktop (Wake-on-LAN).
 - **Printer** (`printer.nix`): stock nixpkgs Klipper (not Kalico), Moonraker (7125), Mainsail on port 1803 (keep it there; Mato chose it), ustreamer webcam on 8080 (`/webcam/`), Mobileraker, smartlapse (`~/smartlapse`, joins Moonraker's private `/tmp`) and klipper-backup (`~/klipper-backup`, on boot, a filewatch, and a timer every 4 h). Everything runs as `ruggy` out of `~/printer_data`. `~/printer_data/config` is mutable and not in the repo. Moonraker's settings are in Nix; `~/printer_data/config/moonraker.conf` is unused. Plugins (led_effect, tmc_autotune, timelapse, mainsail-config, Mobileraker) are flake inputs pinned by commit. MCU firmware configs are in `firmware/` and installed as `klipper-flash-{mcu,ebb,btt_lis2dw}`.
-- **Services** (`services.nix`): Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), Beszel hub (4000) and agent (45876).
+- **Services** (`services.nix`): Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), Beszel hub (4000) and agent (45876), and the Atuin sync server (8888, with PostgreSQL; tailnet and wired LAN only).
 - **Minecraft** (`minecraft.nix`): Better Than Adventure (beta 1.7.3) as `minecraft-bta`, on 25565 over Tailscale/LAN only. Files and the hand-placed `server.jar` live in `/srv/share/minecraft/bta`; console with `mc <command>`.
 - **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
 
@@ -37,7 +38,7 @@ Server (`hosts/server/`):
 - **Compositor:** niri. The config is a verbatim KDL file at `modules/home/files/niri/config.kdl`; keep it KDL, because Tessera's keybinds overlay parses it.
 - **Shell UI:** Tessera (`github:matoanselmo/tessera`, flake input `tessera`) on upstream Quickshell (`pkgs.quickshell`).
 - **Login:** greetd + tuigreet (`--time --remember --cmd niri-session`).
-- **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours and abbreviations in `modules/nixos/fish.nix`, on every host), Zed, and a browser picked per host by `my.browser` (`modules/nixos/browser.nix`): Zen Browser on the desktop (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`) and Helium on the laptop (from `github:oxcl/nix-flake-helium-browser`; binary `helium`). The host's browser is the default browser, and the `browser` command runs it, which is what niri's `Mod+E` spawns.
+- **Apps:** foot (JetBrains Mono 12, One Dark), Thunar, fish (custom prompt, colours and abbreviations in `modules/nixos/fish.nix`, on every host; the CLI tools are in `modules/nixos/shell.nix`: zoxide as `cd`, eza as `ls`, Atuin on Ctrl+R, fzf, direnv, bat, fd, ripgrep, btop, dust, lazygit, yazi and nh), Zed, and a browser picked per host by `my.browser` (`modules/nixos/browser.nix`): Zen Browser on the desktop (beta, from `github:0xc000022070/zen-browser-flake`; binary `zen-beta`) and Helium on the laptop (from `github:oxcl/nix-flake-helium-browser`; binary `helium`). The host's browser is the default browser, and the `browser` command runs it, which is what niri's `Mod+E` spawns.
 - **Theme:** Adwaita-dark (GTK), qt6ct for Qt (Fusion with the "darker" palette, `modules/home/qt.nix`), Adwaita cursor at size 8.
 - **Channel:** nixos-unstable. `allowUnfree = true`.
 - **Formatting:** nixfmt (`nix fmt`).
@@ -55,7 +56,7 @@ flake.nix                 inputs + mkHost; every host gets modules/nixos/core.ni
 hosts/<host>/default.nix  host-only imports and packages, my.disk.*, my.browser (server: git user)
 hosts/<host>/hardware.nix nixos-generate-config output (initrd modules etc.)
 hosts/server/             networking, printer (+ firmware/*.cfg), services, power, minecraft
-modules/nixos/            core (every host: nix, boot, users, tailscale, disk, fish, the gcc-arm-embedded overlay),
+modules/nixos/            core (every host: nix, boot, users, tailscale, disk, fish, shell, the gcc-arm-embedded overlay),
                           base (workstations), browser (my.browser), desktop (niri/greetd/thunar/fonts),
                           disk (disko + snapper: my.disk.device/rootSize/swapSize), nas, amd-graphics,
                           intel-graphics, laptop-power, secure-boot (desktop), ssh (desktop, server),
@@ -82,7 +83,7 @@ Tessera notes:
 
 - **Plan before implementing.** When Mato asks a question or is exploring options, answer and plan only. Don't edit files, stage anything or run builds until Mato explicitly asks for the change.
 - **Never invent NixOS or Home Manager option names.** Look them up in the locked sources, e.g. grep `nixos/modules` in the nixpkgs store path or `modules/` in home-manager. Evaluation also fails on unknown options, so run the checks below.
-- **Never run `nixos-rebuild switch`/`boot`/`test`, `disko`, or anything with sudo.** Mato does that (fish abbreviations `nrs`/`nrb`/`nrt`). Validation only builds.
+- **Never run `nixos-rebuild switch`/`boot`/`test`, `disko`, or anything with sudo.** Mato does that (fish abbreviations `nrs`/`nrb`/`nrt`, which call `nh os switch`/`boot`/`test`; `nrsr` on the laptop and server is `nrs` built on the desktop with `--build-host`). Validation only builds.
 - **Secrets stay out of git.** They're root-only files in `/etc/nixos/secrets/` on each machine: `nas-smb` (workstations), `wifi` (server, `psk_home=...`, owned by `wpa_supplicant`). The server's Samba password is set with `smbpasswd`, and klipper-backup's token lives in `~/klipper-backup/.env`.
 - Ask before assuming anything that can't be read from the repo or the running system (share names, disk IDs, hardware).
 - New files must be `git add`ed before flake commands can see them.
@@ -96,7 +97,7 @@ nixos-rebuild build --flake .#laptop
 nixos-rebuild build --flake .#server
 ```
 
-`build` only produces `./result` in the store; it never activates anything. (`nrd` is the same for the current host.)
+`build` only produces `./result` in the store; it never activates anything. (`nrd` is the same for the current host, through `nh os build`.)
 
 ## Reinstalling a host (Mato runs these from the NixOS installer)
 
