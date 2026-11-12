@@ -18,7 +18,7 @@ Every host uses the latest kernel (`linuxPackages_latest`): workstations via `ba
 
 Services:
 
-- **Wake-on-LAN:** the desktop's Ethernet (`enp7s0`) is kept armed for magic packets through NetworkManager (`hosts/desktop/default.nix`). `wakepc` on the server sends one; on the laptop, `wakepc` runs the server's over SSH.
+- **Wake-on-LAN:** the desktop's Ethernet (`enp7s0`) is kept armed for magic packets through NetworkManager (`hosts/desktop/default.nix`). The desktop is wired into the server's private LAN, so `wakepc` on the server sends one to `192.168.100.255`; on the laptop, `wakepc` runs the server's over SSH.
 - **Tailscale:** enabled on every host. Run `sudo tailscale up` once per machine.
 - **OpenSSH:** desktop and server (`modules/nixos/ssh.nix`). Keys only, with no passwords and no root login. The authorized key is the laptop's `id_ed25519.pub`; the server adds `mateusanselmoguarino@gmail.com`, `mato@matopc` and `ruggy@desktop` (`hosts/server/default.nix`). The server also runs fail2ban.
 - **Secure Boot:** desktop only, with lanzaboote (`modules/nixos/secure-boot.nix`). Surface firmware only offers "Microsoft only" or "Microsoft & 3rd Party CA" and can't enroll custom keys, which lanzaboote needs (checked in the Pro 5's UEFI). The laptop therefore uses plain systemd-boot, with Secure Boot set to "None" in its UEFI.

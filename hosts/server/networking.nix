@@ -140,8 +140,10 @@ in
   };
 
   environment.systemPackages = [
+    # The desktop is wired into the private LAN (enp3s0), so the packet goes
+    # to that subnet's broadcast address; 255.255.255.255 would leave over WiFi.
     (pkgs.writeShellScriptBin "wakepc" ''
-      exec ${pkgs.wakeonlan}/bin/wakeonlan A8:A1:59:E8:DA:EC
+      exec ${pkgs.wakeonlan}/bin/wakeonlan -i 192.168.100.255 A8:A1:59:E8:DA:EC
     '')
   ];
 }
