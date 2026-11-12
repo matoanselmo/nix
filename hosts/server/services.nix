@@ -193,10 +193,11 @@
                   '';
                 }
                 {
-                  type = "iframe";
+                  # An <img> scales the MJPEG stream to the column; an iframe
+                  # shows it at its native size on a white page.
+                  type = "html";
                   title = "Webcam";
-                  source = "http://192.168.1.200:8080/stream";
-                  height = 400;
+                  source = ''<img src="http://192.168.1.200:8080/stream" style="width: 100%; border-radius: 5px;">'';
                 }
               ];
             }
