@@ -149,7 +149,7 @@
                         }
                         {
                           title = "Pi-hole";
-                          path = "2000/admin/";
+                          path = "2000/";
                         }
                         {
                           title = "Beszel";
