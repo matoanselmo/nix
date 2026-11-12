@@ -9,6 +9,7 @@
     ./services.nix
     ./power.nix
     ./minecraft.nix
+    ./ntfy.nix
     ../../modules/nixos/intel-graphics.nix
     ../../modules/nixos/ssh.nix
   ];

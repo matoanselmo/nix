@@ -6,6 +6,7 @@
     ./disk.nix
     ./fish.nix
     ./shell.nix
+    ./notify.nix
   ];
 
   nix.settings = {

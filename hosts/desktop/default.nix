@@ -19,6 +19,11 @@
     pkgs.nodejs
   ];
 
+  # matoserver's key, so it can build here with `nrsr` (modules/nixos/fish.nix).
+  users.users.ruggy.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOX+0SlGusExdL7Y8YREJYsEnNhDaOWaJrIJxGFt4ONP ruggy@matoserver"
+  ];
+
   networking.networkmanager.connectionConfig."ethernet.wake-on-lan" = 64;
 
   my.disk.device = "/dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K178413";
