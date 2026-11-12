@@ -16,6 +16,19 @@
       ];
       listeningMode = "ALL";
     };
+    # The blocklists from the old Docker Pi-hole's teleporter backup.
+    lists =
+      map
+        (name: {
+          url = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/${name}.txt";
+          description = "HaGeZi ${name}";
+        })
+        [
+          "pro"
+          "popupads"
+          "fake"
+          "nsfw"
+        ];
   };
   services.pihole-web = {
     enable = true;
@@ -71,6 +84,24 @@
                   hour-format = "12h";
                   hide-location = true;
                 }
+                {
+                  type = "bookmarks";
+                  groups = [
+                    {
+                      title = "Links";
+                      links = [
+                        {
+                          title = "Mainsail";
+                          url = "http://matoserver:1803";
+                        }
+                        {
+                          title = "Tailscale admin";
+                          url = "https://login.tailscale.com/admin/machines";
+                        }
+                      ];
+                    }
+                  ];
+                }
               ];
             }
             {
@@ -84,8 +115,93 @@
                       name = "matoserver";
                       hide-mountpoints-by-default = true;
                       mountpoints."/".hide = false;
+                      mountpoints."/srv/share" = {
+                        hide = false;
+                        name = "NAS";
+                      };
                     }
                   ];
+                }
+                {
+                  type = "monitor";
+                  title = "Services";
+                  cache = "1m";
+                  # Links use the WiFi address; checks go to localhost.
+                  sites =
+                    map
+                      (site: {
+                        inherit (site) title;
+                        url = "http://192.168.1.200:${site.path}";
+                        check-url = "http://127.0.0.1:${site.path}";
+                      })
+                      [
+                        {
+                          title = "Mainsail";
+                          path = "1803";
+                        }
+                        {
+                          title = "Moonraker";
+                          path = "7125/server/info";
+                        }
+                        {
+                          title = "Webcam";
+                          path = "8080/";
+                        }
+                        {
+                          title = "Pi-hole";
+                          path = "2000/admin/";
+                        }
+                        {
+                          title = "Beszel";
+                          path = "4000";
+                        }
+                        {
+                          title = "Glances";
+                          path = "61208";
+                        }
+                        {
+                          title = "ntfy";
+                          path = "2586";
+                        }
+                        {
+                          title = "Atuin";
+                          path = "8888";
+                        }
+                      ];
+                }
+                {
+                  type = "custom-api";
+                  title = "Printer";
+                  cache = "30s";
+                  url = "http://127.0.0.1:7125/printer/objects/query?print_stats&display_status";
+                  template = ''
+                    {{ $state := .JSON.String "result.status.print_stats.state" }}
+                    <div class="flex justify-between items-center">
+                      <div class="color-highlight size-h3">{{ $state }}</div>
+                      {{ if eq $state "printing" "paused" }}
+                        <div class="size-h3">{{ .JSON.Float "result.status.display_status.progress" | mul 100.0 | toInt }}%</div>
+                      {{ end }}
+                    </div>
+                    {{ $file := .JSON.String "result.status.print_stats.filename" }}
+                    {{ if $file }}<div class="text-truncate">{{ $file }}</div>{{ end }}
+                  '';
+                }
+                {
+                  type = "iframe";
+                  title = "Webcam";
+                  source = "http://192.168.1.200:8080/stream";
+                  height = 400;
+                }
+              ];
+            }
+            {
+              size = "small";
+              widgets = [
+                {
+                  type = "dns-stats";
+                  service = "pihole-v6";
+                  url = "http://127.0.0.1:2000";
+                  hour-format = "12h";
                 }
               ];
             }
