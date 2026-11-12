@@ -43,7 +43,7 @@
 
     # Not in nixpkgs; Rust CAD app with its own flake (desktop only).
     solidcraft = {
-      url = "github:tangency-labs/solidcraft";
+      url = "github:tangency-labs/solidcraft/v0.30.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
