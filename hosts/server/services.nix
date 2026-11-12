@@ -173,17 +173,23 @@
                   type = "custom-api";
                   title = "Printer";
                   cache = "30s";
-                  url = "http://127.0.0.1:7125/printer/objects/query?print_stats&display_status";
+                  url = "http://127.0.0.1:7125/printer/objects/query?webhooks&print_stats&display_status";
+                  # print_stats keeps the last job after the printer is turned
+                  # off (Klippy goes to "shutdown"), so check Klippy first.
                   template = ''
+                    {{ $klippy := .JSON.String "result.status.webhooks.state" }}
                     {{ $state := .JSON.String "result.status.print_stats.state" }}
-                    <div class="flex justify-between items-center">
-                      <div class="color-highlight size-h3">{{ $state }}</div>
-                      {{ if eq $state "printing" "paused" }}
+                    {{ if ne $klippy "ready" }}
+                      <div class="color-subdue size-h3">{{ if eq $klippy "shutdown" }}off{{ else }}{{ $klippy }}{{ end }}</div>
+                    {{ else if eq $state "printing" "paused" }}
+                      <div class="flex justify-between items-center">
+                        <div class="color-highlight size-h3">{{ $state }}</div>
                         <div class="size-h3">{{ .JSON.Float "result.status.display_status.progress" | mul 100.0 | toInt }}%</div>
-                      {{ end }}
-                    </div>
-                    {{ $file := .JSON.String "result.status.print_stats.filename" }}
-                    {{ if $file }}<div class="text-truncate">{{ $file }}</div>{{ end }}
+                      </div>
+                      <div class="text-truncate">{{ .JSON.String "result.status.print_stats.filename" }}</div>
+                    {{ else }}
+                      <div class="color-highlight size-h3">idle</div>
+                    {{ end }}
                   '';
                 }
                 {
