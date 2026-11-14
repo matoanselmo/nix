@@ -17,7 +17,10 @@
     pkgs.gcc
     pkgs.jetbrains.idea
     pkgs.nodejs
+    pkgs.lm_sensors
   ];
+
+  boot.loader.timeout = 0;
 
   # matoserver's key, so it can build here with `nrsr` (modules/nixos/fish.nix).
   users.users.ruggy.openssh.authorizedKeys.keys = [

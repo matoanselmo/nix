@@ -2,6 +2,8 @@
 # Vulkan (ANV); intel-media-driver adds VA-API decode/encode.
 { pkgs, ... }:
 {
+  boot.initrd.kernelModules = [ "i915" ];
+  
   hardware.cpu.intel.updateMicrocode = true;
 
   hardware.graphics = {

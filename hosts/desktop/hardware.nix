@@ -12,7 +12,8 @@
     "usb_storage"
     "sd_mod"
   ];
-  boot.kernelModules = [ "kvm-amd" ];
-
+  boot.kernelModules = [ "kvm-amd" "nct6775" ];
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  hardware.enableRedistributableFirmware = true;
 }

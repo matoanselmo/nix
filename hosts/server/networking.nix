@@ -135,7 +135,6 @@ in
     allowedTCPPorts = [
       1803 # Mainsail
       7125 # Moonraker
-      4000 # Beszel
     ];
   };
 

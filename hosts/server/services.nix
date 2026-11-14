@@ -152,10 +152,6 @@
                           path = "2000/";
                         }
                         {
-                          title = "Beszel";
-                          path = "4000";
-                        }
-                        {
                           title = "Glances";
                           path = "61208";
                         }
@@ -229,24 +225,6 @@
   services.glances = {
     enable = true;
     openFirewall = true;
-  };
-
-  # The hub (web UI on 4000) and an agent for this machine. The agent now
-  # listens on TCP 45876 (firewalled) instead of the old shared socket: in
-  # the hub, edit the matoserver system to host 127.0.0.1, port 45876.
-  services.beszel.hub = {
-    enable = true;
-    host = "0.0.0.0";
-    port = 4000;
-    environment.APP_URL = "http://192.168.1.200:4000";
-  };
-  services.beszel.agent = {
-    enable = true;
-    environment = {
-      # The hub's public key (not a secret).
-      KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMyWtd4P98uwdFbar4n4ExdTR3YHUEMTGh2neBuxoSv";
-      LISTEN = "45876";
-    };
   };
 
   # Shell history sync for programs.atuin (modules/nixos/shell.nix), on 8888

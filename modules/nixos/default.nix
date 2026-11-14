@@ -4,6 +4,7 @@
 {
   imports = [
     ./base.nix
+    ./boot-splash.nix
     ./browser.nix
     ./desktop.nix
     ./nas.nix

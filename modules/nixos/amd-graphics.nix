@@ -2,6 +2,8 @@
 # RADV for Vulkan and the radeonsi VA-API driver for hardware video decode.
 { pkgs, ... }:
 {
+  boot.initrd.kernelModules = [ "amdgpu" ];
+  
   hardware.cpu.amd.updateMicrocode = true;
 
   hardware.graphics = {
