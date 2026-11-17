@@ -70,7 +70,7 @@ in
     };
     "25-can" = {
       matchConfig.Name = "can*";
-      canConfig.BitRate = "1M";
+      canConfig.BitRate = "500000";
       linkConfig.RequiredForOnline = "no";
     };
   };

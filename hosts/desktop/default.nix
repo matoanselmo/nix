@@ -20,6 +20,15 @@
     pkgs.lm_sensors
   ];
 
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-rocm;
+    loadModels = [ "qwen3.5:4b" "qwen2.5-coder:3b-base" ];
+    environmentVariables = {
+      OLLAMA_KEEP_ALIVE = "1h";
+    };
+  };
+
   boot.loader.timeout = 0;
 
   # matoserver's key, so it can build here with `nrsr` (modules/nixos/fish.nix).

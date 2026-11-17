@@ -8,8 +8,6 @@
         (pkgs.adi1090x-plymouth-themes.override { selected_themes = [ "rings" ]; })
       ];
     };
-    initrd.systemd.enable = true;
-    initrd.verbose = false;
     consoleLogLevel = 3;
     kernelParams = [
       "quiet"
