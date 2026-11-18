@@ -226,6 +226,9 @@
     enable = true;
     openFirewall = true;
   };
+  # glances 4.5.7 depends on python-jose, which nixpkgs marks insecure.
+  # Drop this once glances no longer pulls it in.
+  nixpkgs.config.permittedInsecurePackages = [ "python3.14-python-jose-3.5.0" ];
 
   # Shell history sync for programs.atuin (modules/nixos/shell.nix), on 8888
   # with its own PostgreSQL database. The port isn't opened on the WiFi side,
