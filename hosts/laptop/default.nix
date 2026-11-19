@@ -12,6 +12,7 @@
 
   environment.systemPackages = [
     pkgs.openjdk25
+    pkgs.gcc
     (pkgs.writeShellScriptBin "wakepc" ''
       exec ssh matoserver wakepc
     '')
