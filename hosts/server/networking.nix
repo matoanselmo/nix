@@ -138,15 +138,6 @@ in
     ];
   };
 
-  services.cloudflared = {
-    enable = true;
-    tunnels."bbcdfb88-5061-4ef0-916b-1d84f613f58a" = {
-      credentialsFile = "/var/lib/cloudflared/studyquest.json";
-      ingress."studyquest.scarlettkhun.dev" = "http://localhost:9090";
-      default = "http_status:404";
-    };
-  };
-
   environment.systemPackages = [
     # The desktop is wired into the private LAN (enp3s0), so the packet goes
     # to that subnet's broadcast address; 255.255.255.255 would leave over WiFi.
