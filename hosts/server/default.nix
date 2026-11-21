@@ -74,6 +74,7 @@
     v4l-utils
     can-utils
     inotify-tools
+    claude-code
   ];
 
   programs.git.config.user = {

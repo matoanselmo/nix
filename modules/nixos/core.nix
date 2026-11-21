@@ -105,6 +105,7 @@
     ntfs3g
     nvme-cli
     unzip
+    python
   ];
 
   # Version the first install was made with. Don't bump it on upgrades.
