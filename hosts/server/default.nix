@@ -10,6 +10,7 @@
     ./power.nix
     ./minecraft.nix
     ./ntfy.nix
+    ./cloudflared.nix
     ../../modules/nixos/intel-graphics.nix
     ../../modules/nixos/ssh.nix
   ];

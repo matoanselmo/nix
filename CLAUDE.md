@@ -33,6 +33,7 @@ Server (`hosts/server/`):
 - **Services** (`services.nix`): Pi-hole (DNS 53, web 2000), Samba (`/srv/share`), Glance (100, needs `CAP_NET_BIND_SERVICE`), Glances (61208), ntfy (2586, `ntfy.nix`; tailnet and wired LAN only), and the Atuin sync server (8888, with PostgreSQL; tailnet and wired LAN only).
 - **Minecraft** (`minecraft.nix`): Better Than Adventure (beta 1.7.3) as `minecraft-bta`, on 25565 over Tailscale/LAN only. Files and the hand-placed `server.jar` live in `/srv/share/minecraft/bta`; console with `mc <command>`.
 - **Power** (`power.nix`): powertop auto-tune, thermald, SATA min_power.
+- **Cloudflare tunnel** (`cloudflared.nix`): the `studyquest` tunnel serves `studyquest.scarlettkhun.dev` from `localhost:8081`. Outbound only, no firewall ports. StudyQuest itself (and its MongoDB) isn't in this repo: it runs as the systemd user services `studyquest` and `studyquest-mongo` from `~/studyquest`.
 
 ## Preferences
 
@@ -85,7 +86,7 @@ Tessera notes:
 - **Plan before implementing.** When Mato asks a question or is exploring options, answer and plan only. Don't edit files, stage anything or run builds until Mato explicitly asks for the change.
 - **Never invent NixOS or Home Manager option names.** Look them up in the locked sources, e.g. grep `nixos/modules` in the nixpkgs store path or `modules/` in home-manager. Evaluation also fails on unknown options, so run the checks below.
 - **Never run `nixos-rebuild switch`/`boot`/`test`, `disko`, or anything with sudo.** Mato does that (fish abbreviations `nrs`/`nrb`/`nrt`, which call `nh os switch`/`boot`/`test`; `nrsr` on the laptop and server is `nrs` built on the desktop with `--build-host`). Validation only builds.
-- **Secrets stay out of git.** They're root-only files in `/etc/nixos/secrets/` on each machine: `nas-smb` (workstations), `wifi` (server, `psk_home=...`, owned by `wpa_supplicant`). The server's Samba password is set with `smbpasswd`, and klipper-backup's token lives in `~/klipper-backup/.env`.
+- **Secrets stay out of git.** They're root-only files in `/etc/nixos/secrets/` on each machine: `nas-smb` (workstations), `wifi` (server, `psk_home=...`, owned by `wpa_supplicant`), `cloudflared-studyquest.json` (server, the tunnel's credentials, root 0400). The server's Samba password is set with `smbpasswd`, and klipper-backup's token lives in `~/klipper-backup/.env`.
 - Ask before assuming anything that can't be read from the repo or the running system (share names, disk IDs, hardware).
 - New files must be `git add`ed before flake commands can see them.
 
